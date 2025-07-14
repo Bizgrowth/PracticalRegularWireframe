@@ -12,6 +12,8 @@ export default function HomeScreen() {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
+  const [topInvestments, setTopInvestments] = useState('');
+  const [loadingInvestments, setLoadingInvestments] = useState(false);
 
   const testOpenAI = async () => {
     setLoading(true);
@@ -24,6 +26,20 @@ export default function HomeScreen() {
       setAnswer(`❌ OpenAI API Key Test Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generateDailyTop10 = async () => {
+    setLoadingInvestments(true);
+    try {
+      const { generateTop10Investments } = await import('@/services/aiAnalysis');
+      const investments = await generateTop10Investments();
+      setTopInvestments(investments);
+    } catch (error) {
+      console.error('Investment Generation Error:', error);
+      setTopInvestments(`❌ Failed to generate investments: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setLoadingInvestments(false);
     }
   };
 
@@ -81,6 +97,24 @@ export default function HomeScreen() {
           <ThemedView style={styles.answerContainer}>
             <ThemedText type="defaultSemiBold">AI Response:</ThemedText>
             <ThemedText style={styles.answer}>{answer}</ThemedText>
+          </ThemedView>
+        )}
+      </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">📈 Daily Top 10 Investment Recommendations</ThemedText>
+        <ThemedText style={styles.description}>
+          Get AI-powered investment recommendations based on 90-day analysis and future growth potential.
+        </ThemedText>
+        <TouchableOpacity style={styles.investmentButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
+          <ThemedText style={styles.buttonText}>
+            {loadingInvestments ? 'Analyzing Markets...' : 'Generate Today\'s Top 10'}
+          </ThemedText>
+        </TouchableOpacity>
+        {topInvestments && (
+          <ThemedView style={styles.investmentContainer}>
+            <ThemedText type="defaultSemiBold">🎯 Today's Investment Recommendations:</ThemedText>
+            <ThemedText style={styles.investments}>{topInvestments}</ThemedText>
           </ThemedView>
         )}
       </ThemedView>
@@ -186,5 +220,31 @@ const styles = StyleSheet.create({
   change: {
     color: '#22c55e',
     fontWeight: 'bold',
+  },
+  description: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 10,
+    lineHeight: 20,
+  },
+  investmentButton: {
+    backgroundColor: '#27AE60',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  investmentContainer: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#27AE60',
+  },
+  investments: {
+    marginTop: 8,
+    lineHeight: 22,
+    fontSize: 14,
   },
 });

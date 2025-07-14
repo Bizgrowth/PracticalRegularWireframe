@@ -26,6 +26,8 @@ export default function PortfolioScreen() {
   const [newCoin, setNewCoin] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [newPrice, setNewPrice] = useState('');
+  const [portfolioAnalysis, setPortfolioAnalysis] = useState('');
+  const [analyzingPortfolio, setAnalyzingPortfolio] = useState(false);
 
   const addToPortfolio = () => {
     if (!newCoin || !newAmount || !newPrice) {
@@ -57,6 +59,21 @@ export default function PortfolioScreen() {
   const totalCost = portfolio.reduce((sum, item) => sum + (item.buyPrice * item.amount), 0);
   const totalPnL = totalValue - totalCost;
 
+  const analyzePortfolio = async () => {
+    setAnalyzingPortfolio(true);
+    try {
+      const { analyzeWithAI } = await import('@/services/aiAnalysis');
+      const portfolioData = portfolio.map(item => `${item.coin}: ${item.amount} units, bought at $${item.buyPrice}, current price $${item.currentPrice}`).join('; ');
+      const analysis = await analyzeWithAI(`Analyze this crypto portfolio and provide recommendations for optimization: ${portfolioData}. Total value: $${totalValue.toFixed(2)}, Total P&L: $${totalPnL.toFixed(2)}`);
+      setPortfolioAnalysis(analysis);
+    } catch (error) {
+      console.error('Portfolio Analysis Error:', error);
+      setPortfolioAnalysis(`Failed to analyze portfolio: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setAnalyzingPortfolio(false);
+    }
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#4CAF50', dark: '#2E7D32' }}
@@ -81,6 +98,11 @@ export default function PortfolioScreen() {
         <ThemedText style={[styles.pnl, totalPnL >= 0 ? styles.profit : styles.loss]}>
           P&L: ${totalPnL.toFixed(2)} ({((totalPnL / totalCost) * 100).toFixed(2)}%)
         </ThemedText>
+        <TouchableOpacity style={styles.analyzeButton} onPress={analyzePortfolio} disabled={analyzingPortfolio}>
+          <ThemedText style={styles.buttonText}>
+            {analyzingPortfolio ? 'Analyzing...' : '🧠 AI Portfolio Analysis'}
+          </ThemedText>
+        </TouchableOpacity>
       </ThemedView>
 
       <Collapsible title="Add New Position">
@@ -132,6 +154,13 @@ export default function PortfolioScreen() {
           );
         })}
       </ThemedView>
+
+      {portfolioAnalysis && (
+        <ThemedView style={styles.analysisContainer}>
+          <ThemedText type="subtitle">🎯 AI Portfolio Analysis</ThemedText>
+          <ThemedText style={styles.analysisText}>{portfolioAnalysis}</ThemedText>
+        </ThemedView>
+      )}
 
       <Collapsible title="Investment Tips">
         <ThemedText>
@@ -228,5 +257,25 @@ const styles = StyleSheet.create({
   description: {
     color: '#666',
     lineHeight: 20,
+  },
+  analyzeButton: {
+    backgroundColor: '#3498DB',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  analysisContainer: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#e8f4fd',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3498DB',
+  },
+  analysisText: {
+    marginTop: 8,
+    lineHeight: 20,
+    fontSize: 14,
   },
 });
