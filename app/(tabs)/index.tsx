@@ -253,9 +253,14 @@ export default function HomeScreen() {
     }
   };
 
-  const renderInvestmentItem = ({ item }: { item: Investment }) => (
+  const renderInvestmentItem = ({ item, index }: { item: Investment; index: number }) => (
     <ThemedView style={[styles.investmentCard, { backgroundColor: cardColor, borderColor }]}>
       <ThemedView style={styles.investmentHeader}>
+        <ThemedView style={styles.rankContainer}>
+          <ThemedText type="title" style={[styles.rank, { color: tintColor }]}>
+            {index + 1}
+          </ThemedText>
+        </ThemedView>
         <ThemedView style={styles.investmentInfo}>
           <ThemedText type="defaultSemiBold" style={styles.investmentSymbol}>
             {item.symbol}
@@ -268,7 +273,9 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold" style={[styles.score, { color: tintColor }]}>
             {item.score}
           </ThemedText>
-          <ThemedText type="caption">Score</ThemedText>
+          <ThemedText type="caption">
+            Score
+          </ThemedText>
         </ThemedView>
       </ThemedView>
       
@@ -346,7 +353,7 @@ export default function HomeScreen() {
         ) : (
           <FlatList
             data={investments}
-            renderItem={renderInvestmentItem}
+            renderItem={({ item, index }) => renderInvestmentItem({ item, index })}
             keyExtractor={(item) => item.symbol}
             showsVerticalScrollIndicator={false}
             style={styles.investmentsList}
@@ -492,7 +499,6 @@ const styles = StyleSheet.create({
   },
   investmentHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 12,
   },
@@ -505,6 +511,18 @@ const styles = StyleSheet.create({
   },
   investmentName: {
     opacity: 0.7,
+  },
+  rankContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  rank: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   scoreContainer: {
     alignItems: 'center',
