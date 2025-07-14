@@ -17,38 +17,104 @@ interface NewsItem {
   url: string;
   date: string;
   category: string;
+  impact: 'High' | 'Medium' | 'Low';
+  sentiment: 'Bullish' | 'Bearish' | 'Neutral';
+}
+
+interface MarketAnalysis {
+  trend: 'Bullish' | 'Bearish' | 'Sideways';
+  confidence: number;
+  keyLevels: {
+    support: number;
+    resistance: number;
+  };
+  recommendation: string;
 }
 
 export default function NewsScreen() {
   const [news] = useState<NewsItem[]>([
     {
       id: '1',
-      title: 'Bitcoin Reaches New All-Time High',
-      summary: 'Bitcoin has surged to unprecedented levels as institutional adoption continues to grow.',
-      url: 'https://example.com/bitcoin-ath',
+      title: 'Bitcoin ETF Sees Record Inflows of $2.4B',
+      summary: 'Institutional demand for Bitcoin exposure through ETFs reaches new heights as pension funds and sovereign wealth funds increase allocations.',
+      url: 'https://example.com/bitcoin-etf-inflows',
       date: '2024-01-15',
-      category: 'Market'
+      category: 'Institutional',
+      impact: 'High',
+      sentiment: 'Bullish'
     },
     {
       id: '2',
-      title: 'Ethereum 2.0 Staking Rewards Explained',
-      summary: 'Learn how to earn passive income through Ethereum staking and what rewards to expect.',
-      url: 'https://example.com/eth-staking',
+      title: 'Ethereum Shanghai Upgrade Reduces Gas Fees by 40%',
+      summary: 'The latest Ethereum network upgrade significantly improves transaction efficiency and reduces costs for DeFi users.',
+      url: 'https://example.com/ethereum-upgrade',
       date: '2024-01-14',
-      category: 'Education'
+      category: 'Technology',
+      impact: 'High',
+      sentiment: 'Bullish'
     },
     {
       id: '3',
-      title: 'DeFi Protocols Show Strong Growth',
-      summary: 'Decentralized finance continues to expand with new protocols and higher TVL.',
-      url: 'https://example.com/defi-growth',
+      title: 'Regulatory Clarity Emerges in European Union',
+      summary: 'New MiCA regulations provide clear framework for cryptocurrency operations across EU member states.',
+      url: 'https://example.com/eu-regulations',
       date: '2024-01-13',
-      category: 'DeFi'
+      category: 'Regulation',
+      impact: 'Medium',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '4',
+      title: 'DeFi Total Value Locked Surpasses $100B Mark',
+      summary: 'Decentralized finance protocols continue expansion with innovative yield strategies and cross-chain integration.',
+      url: 'https://example.com/defi-tvl',
+      date: '2024-01-12',
+      category: 'DeFi',
+      impact: 'Medium',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '5',
+      title: 'Major Bank Adopts Blockchain for Trade Finance',
+      summary: 'JPMorgan Chase implements blockchain technology for international trade settlements, reducing processing time by 75%.',
+      url: 'https://example.com/bank-blockchain',
+      date: '2024-01-11',
+      category: 'Adoption',
+      impact: 'Medium',
+      sentiment: 'Bullish'
     },
   ]);
 
+  const [marketAnalysis] = useState<MarketAnalysis>({
+    trend: 'Bullish',
+    confidence: 78,
+    keyLevels: {
+      support: 41500,
+      resistance: 46000
+    },
+    recommendation: 'Accumulate on dips with tight risk management. Strong institutional demand supports current levels.'
+  });
+
   const openURL = (url: string) => {
     Linking.openURL(url);
+  };
+
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case 'High': return '#ef4444';
+      case 'Medium': return '#f59e0b';
+      case 'Low': return '#22c55e';
+      default: return '#6b7280';
+    }
+  };
+
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case 'Bullish': return '#22c55e';
+      case 'Bearish': return '#ef4444';
+      case 'Neutral': return '#6b7280';
+      default: return '#6b7280';
+    }
   };
 
   return (
@@ -63,17 +129,52 @@ export default function NewsScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Crypto News & Learning</ThemedText>
+        <ThemedText type="title">Market Intelligence</ThemedText>
+      </ThemedView>
+
+      <ThemedView style={styles.analysisContainer}>
+        <ThemedText type="subtitle">Current Market Analysis</ThemedText>
+        <ThemedView style={styles.trendCard}>
+          <ThemedView style={styles.trendHeader}>
+            <ThemedText style={[styles.trendText, { color: getSentimentColor(marketAnalysis.trend) }]}>
+              {marketAnalysis.trend} Trend
+            </ThemedText>
+            <ThemedText style={styles.confidence}>
+              {marketAnalysis.confidence}% Confidence
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.levelsContainer}>
+            <ThemedView style={styles.level}>
+              <ThemedText style={styles.levelLabel}>Support</ThemedText>
+              <ThemedText style={styles.levelValue}>${marketAnalysis.keyLevels.support.toLocaleString()}</ThemedText>
+            </ThemedView>
+            <ThemedView style={styles.level}>
+              <ThemedText style={styles.levelLabel}>Resistance</ThemedText>
+              <ThemedText style={styles.levelValue}>${marketAnalysis.keyLevels.resistance.toLocaleString()}</ThemedText>
+            </ThemedView>
+          </ThemedView>
+          <ThemedText style={styles.recommendation}>{marketAnalysis.recommendation}</ThemedText>
+        </ThemedView>
       </ThemedView>
       
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">Latest News</ThemedText>
+        <ThemedText type="subtitle">📰 Latest Market News</ThemedText>
         {news.map((item) => (
           <TouchableOpacity key={item.id} style={styles.newsItem} onPress={() => openURL(item.url)}>
             <ThemedView style={styles.newsContent}>
-              <ThemedText type="defaultSemiBold" style={styles.newsTitle}>
-                {item.title}
-              </ThemedText>
+              <ThemedView style={styles.newsHeader}>
+                <ThemedText type="defaultSemiBold" style={styles.newsTitle}>
+                  {item.title}
+                </ThemedText>
+                <ThemedView style={styles.badges}>
+                  <ThemedText style={[styles.impactBadge, { backgroundColor: getImpactColor(item.impact) }]}>
+                    {item.impact}
+                  </ThemedText>
+                  <ThemedText style={[styles.sentimentBadge, { color: getSentimentColor(item.sentiment) }]}>
+                    {item.sentiment}
+                  </ThemedText>
+                </ThemedView>
+              </ThemedView>
               <ThemedText style={styles.newsSummary}>{item.summary}</ThemedText>
               <ThemedView style={styles.newsFooter}>
                 <ThemedText style={styles.newsCategory}>{item.category}</ThemedText>
@@ -84,71 +185,118 @@ export default function NewsScreen() {
         ))}
       </ThemedView>
 
-      <Collapsible title="Beginner's Guide">
-        <ThemedText type="defaultSemiBold">What is Bitcoin?</ThemedText>
+      <Collapsible title="📚 Complete Investment Guide">
+        <ThemedText type="defaultSemiBold">Cryptocurrency Fundamentals</ThemedText>
         <ThemedText>
-          Bitcoin is a decentralized digital currency that operates without a central bank or single administrator.
+          • Blockchain Technology: Decentralized ledger ensuring transparency and security
+        </ThemedText>
+        <ThemedText>
+          • Market Capitalization: Total value of all coins in circulation (Price × Supply)
+        </ThemedText>
+        <ThemedText>
+          • Volume: Amount of trading activity indicating liquidity and interest
+        </ThemedText>
+        <ThemedText>
+          • Volatility: Price fluctuation range - higher volatility means higher risk/reward
         </ThemedText>
         
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
-          How to Get Started
+          Technical Analysis Basics
         </ThemedText>
-        <ThemedText>1. Choose a reputable cryptocurrency exchange</ThemedText>
-        <ThemedText>2. Complete identity verification</ThemedText>
-        <ThemedText>3. Add a payment method</ThemedText>
-        <ThemedText>4. Start with small investments</ThemedText>
-        <ThemedText>5. Learn about wallet security</ThemedText>
+        <ThemedText>• Support/Resistance: Key price levels where buying/selling pressure emerges</ThemedText>
+        <ThemedText>• Moving Averages: 20/50/200 day averages show trend direction</ThemedText>
+        <ThemedText>• RSI (Relative Strength Index): Measures overbought/oversold conditions</ThemedText>
+        <ThemedText>• MACD: Moving Average Convergence Divergence shows momentum shifts</ThemedText>
+        <ThemedText>• Volume Analysis: Confirms price movements and breakouts</ThemedText>
       </Collapsible>
 
-      <Collapsible title="Trading Strategies">
+      <Collapsible title="💡 Advanced Trading Strategies">
         <ThemedText type="defaultSemiBold">Dollar-Cost Averaging (DCA)</ThemedText>
         <ThemedText>
-          Invest a fixed amount regularly regardless of price to reduce volatility impact.
+          • Invest fixed amounts regularly regardless of price
+        </ThemedText>
+        <ThemedText>
+          • Reduces impact of volatility over time
+        </ThemedText>
+        <ThemedText>
+          • Best for long-term wealth building
         </ThemedText>
         
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
-          HODL Strategy
+          Swing Trading
         </ThemedText>
         <ThemedText>
-          Hold your investments for the long term, ignoring short-term price fluctuations.
+          • Hold positions for days to weeks
+        </ThemedText>
+        <ThemedText>
+          • Use technical analysis for entry/exit points
+        </ThemedText>
+        <ThemedText>
+          • Requires active monitoring and risk management
         </ThemedText>
         
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
-          Technical Analysis
+          Value Investing
         </ThemedText>
         <ThemedText>
-          Study price charts and patterns to make informed trading decisions.
+          • Research projects with strong fundamentals
+        </ThemedText>
+        <ThemedText>
+          • Look for undervalued assets with growth potential
+        </ThemedText>
+        <ThemedText>
+          • Focus on utility, team, partnerships, and adoption
         </ThemedText>
       </Collapsible>
 
-      <Collapsible title="Risk Management">
+      <Collapsible title="⚠️ Risk Management Framework">
+        <ThemedText type="defaultSemiBold">Position Sizing Rules</ThemedText>
         <ThemedText>
-          • Never invest more than you can afford to lose
+          • Never risk more than 1-2% of portfolio per trade
         </ThemedText>
         <ThemedText>
-          • Diversify your portfolio across different assets
+          • Limit individual positions to 5-10% of total portfolio
         </ThemedText>
         <ThemedText>
-          • Use stop-loss orders to limit potential losses
+          • Keep 20-30% in stablecoins for opportunities
         </ThemedText>
-        <ThemedText>
-          • Keep emotions in check - stick to your strategy
+        
+        <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
+          Stop Loss Strategies
         </ThemedText>
-        <ThemedText>
-          • Stay informed about market trends and news
+        <ThemedText>• Set stops 15-20% below entry for swing trades</ThemedText>
+        <ThemedText>• Use trailing stops to lock in profits</ThemedText>
+        <ThemedText>• Mental stops for long-term positions</ThemedText>
+        <ThemedText>• Never move stops against your position</ThemedText>
+        
+        <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
+          Diversification Guidelines
         </ThemedText>
+        <ThemedText>• 40-50% Large Cap (BTC, ETH)</ThemedText>
+        <ThemedText>• 25-35% Mid Cap established projects</ThemedText>
+        <ThemedText>• 10-20% Small Cap/DeFi (higher risk)</ThemedText>
+        <ThemedText>• 5-15% Experimental/New sectors</ThemedText>
       </Collapsible>
 
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">Recommended Resources</ThemedText>
-        <ExternalLink href="https://coindesk.com">
-          <ThemedText type="link">CoinDesk - Crypto News</ThemedText>
-        </ExternalLink>
+        <ThemedText type="subtitle">📊 Essential Resources</ThemedText>
         <ExternalLink href="https://coinmarketcap.com">
-          <ThemedText type="link">CoinMarketCap - Market Data</ThemedText>
+          <ThemedText type="link">CoinMarketCap - Market Data & Rankings</ThemedText>
         </ExternalLink>
-        <ExternalLink href="https://academy.binance.com">
-          <ThemedText type="link">Binance Academy - Education</ThemedText>
+        <ExternalLink href="https://coingecko.com">
+          <ThemedText type="link">CoinGecko - Comprehensive Analytics</ThemedText>
+        </ExternalLink>
+        <ExternalLink href="https://tradingview.com">
+          <ThemedText type="link">TradingView - Advanced Charts & Analysis</ThemedText>
+        </ExternalLink>
+        <ExternalLink href="https://defipulse.com">
+          <ThemedText type="link">DeFi Pulse - DeFi Protocol Tracking</ThemedText>
+        </ExternalLink>
+        <ExternalLink href="https://messari.io">
+          <ThemedText type="link">Messari - Research & Fundamental Analysis</ThemedText>
+        </ExternalLink>
+        <ExternalLink href="https://cryptopanic.com">
+          <ThemedText type="link">CryptoPanic - News Aggregator</ThemedText>
         </ExternalLink>
       </ThemedView>
     </ParallaxScrollView>
@@ -167,30 +315,104 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  analysisContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  trendCard: {
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 8,
+  },
+  trendHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  trendText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  confidence: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: 'bold',
+  },
+  levelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  level: {
+    alignItems: 'center',
+  },
+  levelLabel: {
+    fontSize: 12,
+    color: '#666',
+  },
+  levelValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2196F3',
+  },
+  recommendation: {
+    fontSize: 12,
+    color: '#444',
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
   section: {
     marginBottom: 20,
   },
   newsItem: {
     backgroundColor: '#f9f9f9',
     padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   newsContent: {
-    gap: 5,
+    gap: 8,
+  },
+  newsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   newsTitle: {
     fontSize: 16,
-    marginBottom: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  badges: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  impactBadge: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  sentimentBadge: {
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   newsSummary: {
     color: '#666',
     lineHeight: 18,
+    fontSize: 14,
   },
   newsFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 8,
   },
   newsCategory: {
     fontSize: 12,
