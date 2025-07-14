@@ -1,4 +1,3 @@
-
 import { Image } from "expo-image";
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, RefreshControl, Modal } from "react-native";
 import { useState, useEffect } from "react";
@@ -16,8 +15,11 @@ import {
 import { AIMarketInsight } from "@/services/aiAnalysis";
 import { Collapsible } from "@/components/Collapsible";
 import { AIInsights } from "@/components/AIInsights";
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function HomeScreen() {
+  const colorScheme = useColorScheme();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,11 +40,11 @@ export default function HomeScreen() {
       const cryptos = await CryptoAnalysisService.fetchTopCryptos();
       const top10 = await CryptoAnalysisService.generateTop10RecommendationsWithAI(cryptos, selectedStrategy);
       setRecommendations(top10);
-      
+
       // Get AI insights
       const insights = await CryptoAnalysisService.getAIMarketInsights();
       setAiInsights(insights);
-      
+
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Error loading recommendations:', error);
@@ -57,7 +59,7 @@ export default function HomeScreen() {
 
   const askAI = async () => {
     if (!question.trim()) return;
-    
+
     setLoading(true);
     try {
       // Get market context for AI
@@ -67,7 +69,7 @@ export default function HomeScreen() {
         marketInsights,
         topRecommendations: recommendations.slice(0, 3)
       };
-      
+
       // Use AI crypto expert service
       const aiResponse = await CryptoAnalysisService.askCryptoExpert(question, context);
       setAnswer(aiResponse);
@@ -157,7 +159,7 @@ export default function HomeScreen() {
         <ThemedText style={styles.disclaimer}>
           Customized analysis based on your selected strategy
         </ThemedText>
-        
+
         {recommendations.map((rec) => (
           <ThemedView key={rec.crypto.id} style={styles.recommendationCard}>
             <ThemedView style={styles.rankHeader}>
@@ -175,7 +177,7 @@ export default function HomeScreen() {
                 </ThemedText>
               </ThemedView>
             </ThemedView>
-            
+
             <ThemedView style={styles.priceContainer}>
               <ThemedText style={styles.currentPrice}>${rec.crypto.current_price.toLocaleString()}</ThemedText>
               <ThemedText style={[
@@ -213,7 +215,7 @@ export default function HomeScreen() {
           </ThemedView>
         ))}
       </ThemedView>
-      
+
       <Collapsible title="Ask the Crypto Expert AI">
         <TextInput
           style={styles.input}

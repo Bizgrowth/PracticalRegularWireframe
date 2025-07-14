@@ -1,4 +1,3 @@
-
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useState } from 'react';
@@ -32,68 +31,14 @@ interface MarketAnalysis {
 }
 
 export default function NewsScreen() {
-  const [news] = useState<NewsItem[]>([
-    {
-      id: '1',
-      title: 'Bitcoin ETF Sees Record Inflows of $2.4B',
-      summary: 'Institutional demand for Bitcoin exposure through ETFs reaches new heights as pension funds and sovereign wealth funds increase allocations.',
-      url: 'https://example.com/bitcoin-etf-inflows',
-      date: '2024-01-15',
-      category: 'Institutional',
-      impact: 'High',
-      sentiment: 'Bullish'
-    },
-    {
-      id: '2',
-      title: 'Ethereum Shanghai Upgrade Reduces Gas Fees by 40%',
-      summary: 'The latest Ethereum network upgrade significantly improves transaction efficiency and reduces costs for DeFi users.',
-      url: 'https://example.com/ethereum-upgrade',
-      date: '2024-01-14',
-      category: 'Technology',
-      impact: 'High',
-      sentiment: 'Bullish'
-    },
-    {
-      id: '3',
-      title: 'Regulatory Clarity Emerges in European Union',
-      summary: 'New MiCA regulations provide clear framework for cryptocurrency operations across EU member states.',
-      url: 'https://example.com/eu-regulations',
-      date: '2024-01-13',
-      category: 'Regulation',
-      impact: 'Medium',
-      sentiment: 'Bullish'
-    },
-    {
-      id: '4',
-      title: 'DeFi Total Value Locked Surpasses $100B Mark',
-      summary: 'Decentralized finance protocols continue expansion with innovative yield strategies and cross-chain integration.',
-      url: 'https://example.com/defi-tvl',
-      date: '2024-01-12',
-      category: 'DeFi',
-      impact: 'Medium',
-      sentiment: 'Bullish'
-    },
-    {
-      id: '5',
-      title: 'Major Bank Adopts Blockchain for Trade Finance',
-      summary: 'JPMorgan Chase implements blockchain technology for international trade settlements, reducing processing time by 75%.',
-      url: 'https://example.com/bank-blockchain',
-      date: '2024-01-11',
-      category: 'Adoption',
-      impact: 'Medium',
-      sentiment: 'Bullish'
-    },
-  ]);
+  const colorScheme = useColorScheme();
+  const [news, setNews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [marketAnalysis] = useState<MarketAnalysis>({
-    trend: 'Bullish',
-    confidence: 78,
-    keyLevels: {
-      support: 41500,
-      resistance: 46000
-    },
-    recommendation: 'Accumulate on dips with tight risk management. Strong institutional demand supports current levels.'
-  });
+  const backgroundColor = useThemeColor({}, 'background');
+  const cardBackground = useThemeColor({}, 'cardBackground');
+  const textColor = useThemeColor({}, 'text');
+  const borderColor = useThemeColor({}, 'border');
 
   const openURL = (url: string) => {
     Linking.openURL(url);
@@ -156,7 +101,7 @@ export default function NewsScreen() {
           <ThemedText style={styles.recommendation}>{marketAnalysis.recommendation}</ThemedText>
         </ThemedView>
       </ThemedView>
-      
+
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle">📰 Latest Market News</ThemedText>
         {news.map((item) => (
@@ -199,7 +144,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Volatility: Price fluctuation range - higher volatility means higher risk/reward
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Technical Analysis Basics
         </ThemedText>
@@ -221,7 +166,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Best for long-term wealth building
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Swing Trading
         </ThemedText>
@@ -234,7 +179,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Requires active monitoring and risk management
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Value Investing
         </ThemedText>
@@ -260,7 +205,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Keep 20-30% in stablecoins for opportunities
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Stop Loss Strategies
         </ThemedText>
@@ -268,7 +213,7 @@ export default function NewsScreen() {
         <ThemedText>• Use trailing stops to lock in profits</ThemedText>
         <ThemedText>• Mental stops for long-term positions</ThemedText>
         <ThemedText>• Never move stops against your position</ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Diversification Guidelines
         </ThemedText>
@@ -505,5 +450,29 @@ const styles = StyleSheet.create({
   guideTitle: {
     marginTop: 15,
     marginBottom: 5,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  newsCard: {
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
 });
