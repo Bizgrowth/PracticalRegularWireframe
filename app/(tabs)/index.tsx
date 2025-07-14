@@ -307,11 +307,10 @@ export default function HomeScreen() {
   return (
     <ParallaxScrollView
       headerImage={
-        <IconSymbol
-          size={200}
-          color="#FF9500"
-          name="bitcoinsign.circle"
-          style={styles.headerIcon}
+        <Image
+          source={require('@/attached_assets/image_1752536791832.png')}
+          style={styles.headerImage}
+          contentFit="cover"
         />
       }
       headerBackgroundColor={{ light: '#F8F9FA', dark: '#1A1A1A' }}>
@@ -631,9 +630,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  headerIcon: {
-    bottom: -50,
-    left: -35,
-    position: 'absolute',
+  headerImage: {
+    height: '100%',
+    width: '100%',
   },
 });
