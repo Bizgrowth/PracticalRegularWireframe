@@ -1,4 +1,3 @@
-
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useThemeColor } from '@/components/Themed';
 
 interface NewsItem {
   id: string;
@@ -156,7 +156,7 @@ export default function NewsScreen() {
           <ThemedText style={styles.recommendation}>{marketAnalysis.recommendation}</ThemedText>
         </ThemedView>
       </ThemedView>
-      
+
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle">📰 Latest Market News</ThemedText>
         {news.map((item) => (
@@ -199,7 +199,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Volatility: Price fluctuation range - higher volatility means higher risk/reward
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Technical Analysis Basics
         </ThemedText>
@@ -221,7 +221,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Best for long-term wealth building
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Swing Trading
         </ThemedText>
@@ -234,7 +234,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Requires active monitoring and risk management
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Value Investing
         </ThemedText>
@@ -260,7 +260,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Keep 20-30% in stablecoins for opportunities
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Stop Loss Strategies
         </ThemedText>
@@ -268,7 +268,7 @@ export default function NewsScreen() {
         <ThemedText>• Use trailing stops to lock in profits</ThemedText>
         <ThemedText>• Mental stops for long-term positions</ThemedText>
         <ThemedText>• Never move stops against your position</ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Diversification Guidelines
         </ThemedText>
@@ -368,12 +368,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   newsItem: {
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: useThemeColor({}, 'background'),
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: useThemeColor({ light: '#e0e0e0', dark: '#444444' }, 'text'),
+    borderRadius: 8,
+    padding: 12,
   },
   newsContent: {
     gap: 8,

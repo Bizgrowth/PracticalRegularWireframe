@@ -1,26 +1,53 @@
+
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Crypto Expert App Color Scheme
+ * Optimized for readability and professional crypto trading interface
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#FF6B35'; // Bitcoin orange
+const tintColorDark = '#F7931A'; // Bitcoin orange
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#1A1A1A',
+    textSecondary: '#4A4A4A',
+    textMuted: '#6B7280',
+    background: '#FFFFFF',
+    backgroundSecondary: '#F8F9FA',
+    backgroundCard: '#FFFFFF',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#6B7280',
+    tabIconDefault: '#6B7280',
     tabIconSelected: tintColorLight,
+    border: '#E5E7EB',
+    success: '#10B981',
+    danger: '#EF4444',
+    warning: '#F59E0B',
+    info: '#3B82F6',
+    primary: '#FF6B35',
+    secondary: '#6366F1',
+    accent: '#EC4899',
+    shadow: 'rgba(0, 0, 0, 0.1)',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F9FAFB',
+    textSecondary: '#D1D5DB',
+    textMuted: '#9CA3AF',
+    background: '#0F172A',
+    backgroundSecondary: '#1E293B',
+    backgroundCard: '#334155',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: '#9CA3AF',
+    tabIconDefault: '#9CA3AF',
     tabIconSelected: tintColorDark,
+    border: '#475569',
+    success: '#22C55E',
+    danger: '#F87171',
+    warning: '#FBBF24',
+    info: '#60A5FA',
+    primary: '#F7931A',
+    secondary: '#8B5CF6',
+    accent: '#F472B6',
+    shadow: 'rgba(0, 0, 0, 0.3)',
   },
 };

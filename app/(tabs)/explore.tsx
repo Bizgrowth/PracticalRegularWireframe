@@ -1,4 +1,3 @@
-
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useThemeColor } from '@/components/Themed';
 
 interface PortfolioItem {
   id: string;
@@ -64,7 +64,7 @@ export default function PortfolioScreen() {
       stopLoss: 80
     },
   ]);
-  
+
   const [newCoin, setNewCoin] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [newPrice, setNewPrice] = useState('');
@@ -174,10 +174,10 @@ export default function PortfolioScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Advanced Portfolio</ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.metricsContainer}>
         <ThemedText type="subtitle">Portfolio Analytics</ThemedText>
-        
+
         <ThemedView style={styles.mainMetrics}>
           <ThemedView style={styles.metricCard}>
             <ThemedText style={styles.metricLabel}>Total Value</ThemedText>
@@ -267,7 +267,7 @@ export default function PortfolioScreen() {
           const { pnl, percentage } = calculatePnL(item);
           const positionStatus = getPositionStatus(item);
           const daysHeld = Math.floor((Date.now() - new Date(item.buyDate).getTime()) / (1000 * 60 * 60 * 24));
-          
+
           return (
             <ThemedView key={item.id} style={styles.portfolioItem}>
               <ThemedView style={styles.itemHeader}>
@@ -285,7 +285,7 @@ export default function PortfolioScreen() {
                   <ThemedText style={styles.removeButton}>✕</ThemedText>
                 </TouchableOpacity>
               </ThemedView>
-              
+
               <ThemedView style={styles.priceInfo}>
                 <ThemedView style={styles.priceRow}>
                   <ThemedText style={styles.priceLabel}>Buy:</ThemedText>
@@ -323,7 +323,7 @@ export default function PortfolioScreen() {
         <ThemedText>• Set stop losses at 15-20% below entry price</ThemedText>
         <ThemedText>• Take profits at 50-100% gains for altcoins</ThemedText>
         <ThemedText>• Use position sizing (max 5% per trade)</ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.strategyTitle}>
           Portfolio Allocation
         </ThemedText>
@@ -507,6 +507,12 @@ const styles = StyleSheet.create({
   },
   strategyTitle: {
     marginTop: 15,
+    marginBottom: 5,
+  },
+  sectionContent: {
+    fontSize: 14,
+    color: useThemeColor({ light: '#444444', dark: '#cccccc' }, 'text'),
+    lineHeight: 20,
     marginBottom: 5,
   },
 });
