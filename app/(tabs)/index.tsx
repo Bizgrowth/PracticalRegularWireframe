@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   updateText: {
     fontSize: 12,
-    color: '#333',
+    color: '#333333',
   },
   refreshButton: {
     color: '#FFB800',
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   },
   cryptoName: {
     fontSize: 12,
-    color: '#444',
+    color: '#333333',
   },
   scoreContainer: {
     alignItems: 'flex-end',
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
   },
   reasoning: {
     fontSize: 12,
-    color: '#444',
+    color: '#333333',
     marginBottom: 5,
     fontStyle: 'italic',
   },
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333333',
   },
   change: {
     color: '#22c55e',
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
   strategyDetail: {
     fontSize: 11,
-    color: '#444',
+    color: '#333333',
   },
   modalOverlay: {
     flex: 1,

@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   confidence: {
     fontSize: 14,
-    color: '#555',
+    color: '#444444',
     fontWeight: 'bold',
   },
   levelsContainer: {
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   },
   levelLabel: {
     fontSize: 12,
-    color: '#555',
+    color: '#444444',
   },
   levelValue: {
     fontSize: 16,
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   recommendation: {
     fontSize: 12,
-    color: '#333',
+    color: '#444444',
     fontStyle: 'italic',
     textAlign: 'center',
   },
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   newsSummary: {
-    color: '#666',
+    color: '#444444',
     lineHeight: 18,
     fontSize: 14,
   },

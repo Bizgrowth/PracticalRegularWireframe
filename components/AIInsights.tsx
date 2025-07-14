@@ -75,27 +75,57 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    color: '#2E86C1',
+  sentimentContainer: {
+    alignItems: 'flex-end',
   },
-  content: {
+  sentiment: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  confidence: {
+    fontSize: 12,
+    color: '#666666',
+  },
+  summary: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#222',
+    color: '#333333',
+    marginBottom: 10,
   },
-  loading: {
+  keyFactors: {
+    marginBottom: 10,
+  },
+  sectionTitle: {
     fontSize: 14,
-    color: '#555',
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  factor: {
+    fontSize: 13,
+    color: '#444444',
+    marginLeft: 10,
+    marginBottom: 2,
+  },
+  riskContainer: {
+    marginBottom: 10,
+  },
+  risk: {
+    fontSize: 13,
+    color: '#444444',
+    marginLeft: 10,
+  },
+  recommendationContainer: {
+    marginBottom: 5,
+  },
+  recommendation: {
+    fontSize: 13,
+    color: '#444444',
+    marginLeft: 10,
     fontStyle: 'italic',
-  },
-  error: {
-    fontSize: 14,
-    color: '#e74c3c',
   },
 });

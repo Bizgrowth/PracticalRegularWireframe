@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#444444',
     marginBottom: 5,
   },
   metricValue: {
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   performanceLabel: {
     fontSize: 11,
-    color: '#666',
+    color: '#444444',
     marginBottom: 3,
   },
   performanceValue: {
@@ -458,11 +458,11 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 12,
-    color: '#666',
+    color: '#444444',
   },
   daysHeld: {
     fontSize: 11,
-    color: '#888',
+    color: '#555555',
   },
   statusBadge: {
     marginRight: 10,
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#444444',
   },
   targetPrice: {
     color: '#22c55e',
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   },
   positionValue: {
     fontSize: 12,
-    color: '#666',
+    color: '#444444',
   },
   strategyTitle: {
     marginTop: 15,
