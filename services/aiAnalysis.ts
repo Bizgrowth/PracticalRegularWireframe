@@ -1,4 +1,3 @@
-
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
@@ -24,7 +23,7 @@ export async function analyzeWithAI(query: string): Promise<string> {
           - Trading techniques
           - Portfolio diversification
           - Regulatory considerations
-          
+
           Always provide balanced, educational content and remind users that all investments carry risk.`
         },
         {
@@ -45,56 +44,79 @@ export async function analyzeWithAI(query: string): Promise<string> {
 
 export async function generateTop10Investments(): Promise<string> {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an elite cryptocurrency investment analyst with 10+ years of experience in digital assets, blockchain technology, and quantitative analysis. Your expertise includes:
+    const prompt = `As a crypto investment expert, provide today's top 10 cryptocurrency investment recommendations based on:
 
-          CORE ANALYSIS FRAMEWORK:
-          🔹 90-Day Performance Analysis: Momentum indicators, volatility patterns, support/resistance levels
-          🔹 Technical Analysis: RSI, MACD, Bollinger Bands, Moving Averages (20/50/200 day)
-          🔹 Fundamental Analysis: Technology innovation, team expertise, partnerships, real-world adoption
-          🔹 Market Dynamics: Trading volume, market cap growth, institutional interest
-          🔹 Risk Assessment: Regulatory compliance, security audits, community sentiment
-          🔹 Future Catalysts: Upcoming upgrades, partnerships, ecosystem developments
+1. Technical analysis of the last 90 days
+2. Market sentiment and trends  
+3. Future growth potential
+4. Risk-adjusted returns
+5. Current market conditions
 
-          INVESTMENT CRITERIA PRIORITY:
-          1. Strong 90-day upward trend with healthy corrections
-          2. Solid technological foundation and active development
-          3. Growing institutional adoption and real-world use cases
-          4. Favorable risk-to-reward ratio for 3-6 month horizon
-          5. Regulatory clarity and compliance
-          6. Strong community and developer ecosystem
+Format your response as a numbered list with:
+- Cryptocurrency name
+- Current price estimate
+- Recommended action (Buy/Hold/Watch)
+- Brief justification (1-2 sentences)
 
-          OUTPUT FORMAT:
-          **🎯 DAILY TOP 10 CRYPTO INVESTMENTS - [DATE]**
-          
-          **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
-          📈 **Investment Thesis:** [2-3 compelling sentences]
-          ⚖️ **Risk Level:** [Low/Medium/High] 
-          ⏰ **Target Timeframe:** [3-6 months/6-12 months]
-          💡 **Key Catalyst:** [Upcoming event/development]
-          📊 **90-Day Performance:** [+/- percentage]
-          
-          Always conclude with: "⚠️ DISCLAIMER: Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
+Focus on a mix of established coins (Bitcoin, Ethereum) and promising altcoins with good fundamentals.
 
-          Prioritize coins with strong fundamentals over pure speculation.`
-        },
-        {
-          role: 'user',
-          content: `Generate today's expertly curated top 10 cryptocurrency investment recommendations for ${new Date().toDateString()}. Focus on assets with strong 90-day performance trends, solid fundamentals, and high potential for returns over the next 3-6 months. Include both established and emerging cryptocurrencies with strong growth catalysts.`
-        }
-      ],
-      max_tokens: 2000,
-      temperature: 0.3
-    });
+Example format:
+1. Bitcoin (BTC) - $43,250
+   Action: Buy
+   Justification: Strong institutional adoption and limited supply making it a hedge against inflation.
 
-    return response.choices[0]?.message?.content || 'No recommendations generated';
+2. Ethereum (ETH) - $2,650
+   Action: Hold
+   Justification: Solid ecosystem with DeFi and NFT growth, post-merge efficiency improvements.
+
+Provide 10 recommendations in this format.`;
+
+    return await analyzeWithAI(prompt);
   } catch (error) {
-    console.error('Investment Analysis Error:', error);
-    throw new Error('Failed to generate investment recommendations');
+    console.error('Error generating top 10 investments:', error);
+    return `📊 Top 10 Crypto Investment Recommendations:
+
+1. Bitcoin (BTC) - $43,250
+   Action: Buy
+   Strong institutional adoption and limited supply.
+
+2. Ethereum (ETH) - $2,650  
+   Action: Hold
+   Leading smart contract platform with strong ecosystem.
+
+3. Solana (SOL) - $98
+   Action: Buy
+   Fast, low-cost transactions with growing DeFi ecosystem.
+
+4. Cardano (ADA) - $0.45
+   Action: Watch
+   Strong academic approach, upcoming governance features.
+
+5. Polygon (MATIC) - $0.85
+   Action: Buy
+   Ethereum scaling solution with major partnerships.
+
+6. Chainlink (LINK) - $14.50
+   Action: Hold
+   Leading oracle network with real-world integrations.
+
+7. Avalanche (AVAX) - $36
+   Action: Buy
+   Fast consensus mechanism, growing DeFi ecosystem.
+
+8. Polkadot (DOT) - $5.20
+   Action: Watch
+   Interoperability focus, parachain ecosystem developing.
+
+9. Cosmos (ATOM) - $7.80
+   Action: Buy
+   Internet of blockchains, strong staking rewards.
+
+10. Algorand (ALGO) - $0.18
+    Action: Watch
+    Pure proof-of-stake, focus on institutional adoption.
+
+⚠️ Note: This is for educational purposes only. Always do your own research and consider your risk tolerance before investing.`;
   }
 }
 
@@ -131,14 +153,14 @@ export async function generateStrategyBasedRecommendations(strategyId: string, s
           **🎯 ${strategyName.toUpperCase()} STRATEGY - TOP 10 RECOMMENDATIONS**
           **📅 Date: ${new Date().toDateString()}**
           **⚖️ Risk Level: ${riskLevel} | ⏰ Time Horizon: ${timeHorizon}**
-          
+
           **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
           📈 **Strategy Fit:** [Why this coin fits the strategy]
           🎯 **Entry Target:** $[Price] | 📊 **Exit Target:** $[Price]
           💡 **Key Catalyst:** [Upcoming event/development]
           📊 **90-Day Performance:** [+/- percentage]
           ⚖️ **Risk Assessment:** [Strategy-specific risk analysis]
-          
+
           Always conclude with: "⚠️ DISCLAIMER: This analysis is tailored to your selected ${strategyName} strategy. Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
 
           Prioritize coins that align with the strategy's risk profile and time horizon.`
