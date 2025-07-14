@@ -1,4 +1,3 @@
-
 import { Image } from "expo-image";
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList } from "react-native";
 import { useState } from "react";
@@ -91,7 +90,7 @@ export default function HomeScreen() {
 
   const askAI = async () => {
     if (!question.trim()) return;
-    
+
     setLoading(true);
     try {
       const { analyzeWithAI } = await import('@/services/aiAnalysis');
@@ -149,7 +148,7 @@ export default function HomeScreen() {
         <ThemedText style={styles.description}>
           Select your investment strategy and get AI-curated recommendations tailored to your risk tolerance and time horizon.
         </ThemedText>
-        
+
         <TouchableOpacity style={styles.strategySelector} onPress={() => setShowStrategyModal(true)}>
           <ThemedView style={styles.strategyInfo}>
             <ThemedText type="defaultSemiBold" style={styles.strategyName}>{selectedStrategy.name}</ThemedText>
