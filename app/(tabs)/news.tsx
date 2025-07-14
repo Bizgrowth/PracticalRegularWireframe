@@ -440,7 +440,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#666666',
     fontStyle: 'italic',
-  }: 12,
+  },
+  newsItemContainer: {
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#d0d0d0',
