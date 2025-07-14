@@ -14,6 +14,8 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [topInvestments, setTopInvestments] = useState('');
   const [loadingInvestments, setLoadingInvestments] = useState(false);
+  const [marketTrends, setMarketTrends] = useState('');
+  const [loadingTrends, setLoadingTrends] = useState(false);
 
   const testOpenAI = async () => {
     setLoading(true);
@@ -40,6 +42,20 @@ export default function HomeScreen() {
       setTopInvestments(`❌ Failed to generate investments: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoadingInvestments(false);
+    }
+  };
+
+  const analyzeMarket = async () => {
+    setLoadingTrends(true);
+    try {
+      const { analyzeMarketTrends } = await import('@/services/aiAnalysis');
+      const trends = await analyzeMarketTrends();
+      setMarketTrends(trends);
+    } catch (error) {
+      console.error('Market Analysis Error:', error);
+      setMarketTrends(`❌ Failed to analyze market: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setLoadingTrends(false);
     }
   };
 
@@ -102,18 +118,36 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">📈 Daily Top 10 Investment Recommendations</ThemedText>
+        <ThemedText type="subtitle">📊 Market Trends Analysis</ThemedText>
         <ThemedText style={styles.description}>
-          Get AI-powered investment recommendations based on 90-day analysis and future growth potential.
+          Get comprehensive market sentiment and trend analysis to inform your investment decisions.
+        </ThemedText>
+        <TouchableOpacity style={styles.trendsButton} onPress={analyzeMarket} disabled={loadingTrends}>
+          <ThemedText style={styles.buttonText}>
+            {loadingTrends ? 'Analyzing Market...' : 'Get Market Analysis'}
+          </ThemedText>
+        </TouchableOpacity>
+        {marketTrends && (
+          <ThemedView style={styles.trendsContainer}>
+            <ThemedText type="defaultSemiBold">📈 Market Analysis:</ThemedText>
+            <ThemedText style={styles.trends}>{marketTrends}</ThemedText>
+          </ThemedView>
+        )}
+      </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">🎯 Daily Top 10 Investment Recommendations</ThemedText>
+        <ThemedText style={styles.description}>
+          Expert AI-curated investment picks based on 90-day performance, fundamentals, and growth catalysts.
         </ThemedText>
         <TouchableOpacity style={styles.investmentButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
           <ThemedText style={styles.buttonText}>
-            {loadingInvestments ? 'Analyzing Markets...' : 'Generate Today\'s Top 10'}
+            {loadingInvestments ? 'Curating Investments...' : 'Generate Expert Top 10'}
           </ThemedText>
         </TouchableOpacity>
         {topInvestments && (
           <ThemedView style={styles.investmentContainer}>
-            <ThemedText type="defaultSemiBold">🎯 Today's Investment Recommendations:</ThemedText>
+            <ThemedText type="defaultSemiBold">🏆 Today's Expert Investment Picks:</ThemedText>
             <ThemedText style={styles.investments}>{topInvestments}</ThemedText>
           </ThemedView>
         )}
@@ -243,6 +277,26 @@ const styles = StyleSheet.create({
     borderLeftColor: '#27AE60',
   },
   investments: {
+    marginTop: 8,
+    lineHeight: 22,
+    fontSize: 14,
+  },
+  trendsButton: {
+    backgroundColor: '#3498DB',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  trendsContainer: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#f0f8ff',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3498DB',
+  },
+  trends: {
     marginTop: 8,
     lineHeight: 22,
     fontSize: 14,

@@ -50,34 +50,45 @@ export async function generateTop10Investments(): Promise<string> {
       messages: [
         {
           role: 'system',
-          content: `You are an expert cryptocurrency investment analyst with deep knowledge of market trends, technical analysis, and blockchain fundamentals. Generate a comprehensive top 10 cryptocurrency investment list based on:
+          content: `You are an elite cryptocurrency investment analyst with 10+ years of experience in digital assets, blockchain technology, and quantitative analysis. Your expertise includes:
 
-          ANALYSIS CRITERIA:
-          - 90-day performance trends and momentum
-          - Technical indicators (RSI, MACD, moving averages)
-          - Fundamental analysis (technology, team, partnerships)
-          - Market capitalization and liquidity
-          - Adoption rates and real-world utility
-          - Risk-adjusted return potential
-          - Regulatory compliance and legal standing
-          - Community strength and developer activity
+          CORE ANALYSIS FRAMEWORK:
+          🔹 90-Day Performance Analysis: Momentum indicators, volatility patterns, support/resistance levels
+          🔹 Technical Analysis: RSI, MACD, Bollinger Bands, Moving Averages (20/50/200 day)
+          🔹 Fundamental Analysis: Technology innovation, team expertise, partnerships, real-world adoption
+          🔹 Market Dynamics: Trading volume, market cap growth, institutional interest
+          🔹 Risk Assessment: Regulatory compliance, security audits, community sentiment
+          🔹 Future Catalysts: Upcoming upgrades, partnerships, ecosystem developments
 
-          FORMAT REQUIREMENTS:
-          - Rank 1-10 with coin name and symbol
-          - Brief investment thesis (2-3 sentences max)
-          - Risk level (Low/Medium/High)
-          - Expected timeframe for returns
-          - Current market sentiment
+          INVESTMENT CRITERIA PRIORITY:
+          1. Strong 90-day upward trend with healthy corrections
+          2. Solid technological foundation and active development
+          3. Growing institutional adoption and real-world use cases
+          4. Favorable risk-to-reward ratio for 3-6 month horizon
+          5. Regulatory clarity and compliance
+          6. Strong community and developer ecosystem
 
-          RISK DISCLAIMER: Always remind users that cryptocurrency investments are highly volatile and risky.`
+          OUTPUT FORMAT:
+          **🎯 DAILY TOP 10 CRYPTO INVESTMENTS - [DATE]**
+          
+          **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
+          📈 **Investment Thesis:** [2-3 compelling sentences]
+          ⚖️ **Risk Level:** [Low/Medium/High] 
+          ⏰ **Target Timeframe:** [3-6 months/6-12 months]
+          💡 **Key Catalyst:** [Upcoming event/development]
+          📊 **90-Day Performance:** [+/- percentage]
+          
+          Always conclude with: "⚠️ DISCLAIMER: Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
+
+          Prioritize coins with strong fundamentals over pure speculation.`
         },
         {
           role: 'user',
-          content: `Generate today's top 10 cryptocurrency investment recommendations for ${new Date().toDateString()}. Focus on coins with strong fundamentals and growth potential over the next 3-6 months.`
+          content: `Generate today's expertly curated top 10 cryptocurrency investment recommendations for ${new Date().toDateString()}. Focus on assets with strong 90-day performance trends, solid fundamentals, and high potential for returns over the next 3-6 months. Include both established and emerging cryptocurrencies with strong growth catalysts.`
         }
       ],
-      max_tokens: 1200,
-      temperature: 0.4
+      max_tokens: 2000,
+      temperature: 0.3
     });
 
     return response.choices[0]?.message?.content || 'No recommendations generated';
@@ -115,5 +126,42 @@ export async function analyzeInvestmentStrategy(strategy: string): Promise<strin
   } catch (error) {
     console.error('Strategy Analysis Error:', error);
     throw new Error('Failed to analyze investment strategy');
+  }
+}
+
+export async function analyzeMarketTrends(): Promise<string> {
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a cryptocurrency market analyst specializing in trend analysis and market sentiment. Provide comprehensive market analysis covering:
+
+          📊 MARKET ANALYSIS FRAMEWORK:
+          - Overall crypto market sentiment and direction
+          - Bitcoin dominance and altcoin season indicators
+          - Institutional adoption trends and regulatory developments
+          - Major resistance and support levels across key cryptocurrencies
+          - Sector rotation patterns (DeFi, Layer 1s, Gaming, AI tokens, etc.)
+          - Macroeconomic factors affecting crypto markets
+          - Fear & Greed Index interpretation
+          - Volume analysis and liquidity conditions
+
+          Format your analysis with clear sections and actionable insights for investors.`
+        },
+        {
+          role: 'user',
+          content: `Provide a comprehensive cryptocurrency market analysis for ${new Date().toDateString()}. Include current market sentiment, key trends, and what investors should watch for in the coming weeks.`
+        }
+      ],
+      max_tokens: 1000,
+      temperature: 0.4
+    });
+
+    return response.choices[0]?.message?.content || 'No market analysis generated';
+  } catch (error) {
+    console.error('Market Analysis Error:', error);
+    throw new Error('Failed to analyze market trends');
   }
 }
