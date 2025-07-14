@@ -349,10 +349,20 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   metricsContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   mainMetrics: {
     flexDirection: 'row',
@@ -410,8 +420,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     fontSize: 16,
+    color: '#333',
   },
   addButton: {
     backgroundColor: '#4CAF50',

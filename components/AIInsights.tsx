@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
@@ -32,9 +31,9 @@ export function AIInsights({ insights }: AIInsightsProps) {
           </ThemedText>
         </ThemedView>
       </ThemedView>
-      
+
       <ThemedText style={styles.summary}>{insights.summary}</ThemedText>
-      
+
       <ThemedView style={styles.keyFactors}>
         <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>Key Factors:</ThemedText>
         {insights.keyFactors.map((factor, index) => (
@@ -43,12 +42,12 @@ export function AIInsights({ insights }: AIInsightsProps) {
           </ThemedText>
         ))}
       </ThemedView>
-      
+
       <ThemedView style={styles.riskContainer}>
         <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>Risk Assessment:</ThemedText>
         <ThemedText style={styles.risk}>{insights.riskAssessment}</ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.recommendationContainer}>
         <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>AI Recommendation:</ThemedText>
         <ThemedText style={styles.recommendation}>{insights.recommendation}</ThemedText>
@@ -59,65 +58,44 @@ export function AIInsights({ insights }: AIInsightsProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 12,
-    marginBottom: 15,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: '#d0d0d0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
-  sentimentContainer: {
-    alignItems: 'flex-end',
-  },
-  sentiment: {
+  title: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 8,
+    color: '#2E86C1',
   },
-  confidence: {
-    fontSize: 11,
-    color: '#666',
-  },
-  summary: {
+  content: {
     fontSize: 14,
     lineHeight: 20,
-    marginBottom: 12,
+    color: '#222',
+  },
+  loading: {
+    fontSize: 14,
+    color: '#555',
     fontStyle: 'italic',
   },
-  keyFactors: {
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    marginBottom: 6,
-    color: '#334155',
-  },
-  factor: {
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#475569',
-    marginBottom: 3,
-  },
-  riskContainer: {
-    marginBottom: 12,
-  },
-  risk: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#dc2626',
-  },
-  recommendationContainer: {
-    marginBottom: 0,
-  },
-  recommendation: {
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#059669',
-    fontWeight: '500',
+  error: {
+    fontSize: 14,
+    color: '#e74c3c',
   },
 });

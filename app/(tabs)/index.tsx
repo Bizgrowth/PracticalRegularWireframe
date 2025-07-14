@@ -328,12 +328,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   updateText: {
     fontSize: 12,
-    color: '#666',
+    color: '#333',
   },
   refreshButton: {
     color: '#FFB800',
@@ -342,17 +344,25 @@ const styles = StyleSheet.create({
   },
   disclaimer: {
     fontSize: 12,
-    color: '#666',
+    color: '#555',
     fontStyle: 'italic',
     marginBottom: 10,
   },
   recommendationCard: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#d0d0d0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   rankHeader: {
     flexDirection: 'row',
@@ -378,7 +388,7 @@ const styles = StyleSheet.create({
   },
   cryptoName: {
     fontSize: 12,
-    color: '#666',
+    color: '#444',
   },
   scoreContainer: {
     alignItems: 'flex-end',

@@ -316,10 +316,20 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   analysisContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 12,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   trendCard: {
     backgroundColor: '#fff',
@@ -338,7 +348,7 @@ const styles = StyleSheet.create({
   },
   confidence: {
     fontSize: 14,
-    color: '#666',
+    color: '#555',
     fontWeight: 'bold',
   },
   levelsContainer: {
@@ -351,7 +361,7 @@ const styles = StyleSheet.create({
   },
   levelLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#555',
   },
   levelValue: {
     fontSize: 16,
@@ -360,7 +370,7 @@ const styles = StyleSheet.create({
   },
   recommendation: {
     fontSize: 12,
-    color: '#444',
+    color: '#333',
     fontStyle: 'italic',
     textAlign: 'center',
   },
@@ -368,12 +378,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   newsItem: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#d0d0d0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   newsContent: {
     gap: 8,
