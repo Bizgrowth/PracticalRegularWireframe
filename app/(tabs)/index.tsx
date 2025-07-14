@@ -2,6 +2,7 @@
 import { Image } from "expo-image";
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList } from "react-native";
 import { useState } from "react";
+import React from "react";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -20,6 +21,11 @@ export default function HomeScreen() {
   const [selectedStrategy, setSelectedStrategy] = useState<InvestmentStrategy>(INVESTMENT_STRATEGIES[0]);
   const [showStrategyModal, setShowStrategyModal] = useState(false);
   const [strategyRecommendations, setStrategyRecommendations] = useState('');
+
+  // Auto-load top 10 investments on component mount
+  React.useEffect(() => {
+    generateDailyTop10();
+  }, []);
 
   const testOpenAI = async () => {
     setLoading(true);
@@ -113,48 +119,27 @@ export default function HomeScreen() {
         <ThemedText type="title">Crypto Expert AI</ThemedText>
         <HelloWave />
       </ThemedView>
-      
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Ask Your Crypto Questions</ThemedText>
-        <TextInput
-          style={styles.input}
-          placeholder="Ask about Bitcoin, Ethereum, trading strategies..."
-          value={question}
-          onChangeText={setQuestion}
-          multiline
-        />
-        <TouchableOpacity style={styles.askButton} onPress={askAI} disabled={loading}>
-          <ThemedText style={styles.buttonText}>
-            {loading ? 'Thinking...' : 'Ask AI Expert'}
-          </ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.testButton} onPress={testOpenAI} disabled={loading}>
-          <ThemedText style={styles.buttonText}>
-            {loading ? 'Testing...' : 'Test OpenAI Key'}
-          </ThemedText>
-        </TouchableOpacity>
-        {answer && (
-          <ThemedView style={styles.answerContainer}>
-            <ThemedText type="defaultSemiBold">AI Response:</ThemedText>
-            <ThemedText style={styles.answer}>{answer}</ThemedText>
-          </ThemedView>
-        )}
-      </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">📊 Market Trends Analysis</ThemedText>
+        <ThemedText type="subtitle">🏆 Today's Top 10 Investment Picks</ThemedText>
         <ThemedText style={styles.description}>
-          Get comprehensive market sentiment and trend analysis to inform your investment decisions.
+          AI-curated daily recommendations based on 90-day performance analysis and future growth potential.
         </ThemedText>
-        <TouchableOpacity style={styles.trendsButton} onPress={analyzeMarket} disabled={loadingTrends}>
+        <TouchableOpacity style={styles.refreshButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
           <ThemedText style={styles.buttonText}>
-            {loadingTrends ? 'Analyzing Market...' : 'Get Market Analysis'}
+            {loadingInvestments ? 'Updating...' : '🔄 Refresh Top 10'}
           </ThemedText>
         </TouchableOpacity>
-        {marketTrends && (
-          <ThemedView style={styles.trendsContainer}>
-            <ThemedText type="defaultSemiBold">📈 Market Analysis:</ThemedText>
-            <ThemedText style={styles.trends}>{marketTrends}</ThemedText>
+        {topInvestments ? (
+          <ThemedView style={styles.top10Container}>
+            <ThemedText type="defaultSemiBold">🎯 Today's Expert Picks:</ThemedText>
+            <ThemedText style={styles.investments}>{topInvestments}</ThemedText>
+          </ThemedView>
+        ) : (
+          <ThemedView style={styles.loadingContainer}>
+            <ThemedText style={styles.loadingText}>
+              {loadingInvestments ? '📊 Analyzing market data and generating recommendations...' : '💡 Click refresh to load today\'s top investment picks'}
+            </ThemedText>
           </ThemedView>
         )}
       </ThemedView>
@@ -196,16 +181,52 @@ export default function HomeScreen() {
           </ThemedView>
         )}
 
-        <ThemedText type="subtitle" style={styles.generalTitle}>📊 General Market Recommendations</ThemedText>
-        <TouchableOpacity style={styles.generalButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
+        </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">📊 Market Trends Analysis</ThemedText>
+        <ThemedText style={styles.description}>
+          Get comprehensive market sentiment and trend analysis to inform your investment decisions.
+        </ThemedText>
+        <TouchableOpacity style={styles.trendsButton} onPress={analyzeMarket} disabled={loadingTrends}>
           <ThemedText style={styles.buttonText}>
-            {loadingInvestments ? 'Curating Investments...' : 'Generate General Top 10'}
+            {loadingTrends ? 'Analyzing Market...' : 'Get Market Analysis'}
           </ThemedText>
         </TouchableOpacity>
-        {topInvestments && (
-          <ThemedView style={styles.generalContainer}>
-            <ThemedText type="defaultSemiBold">🏆 General Market Picks:</ThemedText>
-            <ThemedText style={styles.investments}>{topInvestments}</ThemedText>
+        {marketTrends && (
+          <ThemedView style={styles.trendsContainer}>
+            <ThemedText type="defaultSemiBold">📈 Market Analysis:</ThemedText>
+            <ThemedText style={styles.trends}>{marketTrends}</ThemedText>
+          </ThemedView>
+        )}
+      </ThemedView>
+
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">💬 Ask Your Crypto Questions</ThemedText>
+        <ThemedText style={styles.description}>
+          Get expert advice on Bitcoin, Ethereum, trading strategies, and more from our AI crypto expert.
+        </ThemedText>
+        <TextInput
+          style={styles.input}
+          placeholder="Ask about Bitcoin, Ethereum, trading strategies..."
+          value={question}
+          onChangeText={setQuestion}
+          multiline
+        />
+        <TouchableOpacity style={styles.askButton} onPress={askAI} disabled={loading}>
+          <ThemedText style={styles.buttonText}>
+            {loading ? 'Thinking...' : 'Ask AI Expert'}
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.testButton} onPress={testOpenAI} disabled={loading}>
+          <ThemedText style={styles.buttonText}>
+            {loading ? 'Testing...' : 'Test OpenAI Key'}
+          </ThemedText>
+        </TouchableOpacity>
+        {answer && (
+          <ThemedView style={styles.answerContainer}>
+            <ThemedText type="defaultSemiBold">AI Response:</ThemedText>
+            <ThemedText style={styles.answer}>{answer}</ThemedText>
           </ThemedView>
         )}
       </ThemedView>
@@ -455,6 +476,38 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: '#95a5a6',
+  },
+  refreshButton: {
+    backgroundColor: '#FFB800',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  top10Container: {
+    marginTop: 15,
+    padding: 20,
+    backgroundColor: '#fff9e6',
+    borderRadius: 12,
+    borderLeftWidth: 5,
+    borderLeftColor: '#FFB800',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  loadingContainer: {
+    marginTop: 15,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  loadingText: {
+    textAlign: 'center',
+    fontStyle: 'italic',
+    color: '#666',
   },
   modalOverlay: {
     flex: 1,
