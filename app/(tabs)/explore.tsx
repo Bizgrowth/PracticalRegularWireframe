@@ -518,6 +518,26 @@ const styles = StyleSheet.create({
   },
   strategyTitle: {
     marginTop: 15,
-    marginBottom: 5,
+    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  strategyText: {
+    fontSize: 14,
+    color: '#444444',
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 10,
+  },
+  sectionContent: {
+    fontSize: 14,
+    color: '#444444',
+    lineHeight: 20,tom: 5,
   },
 });

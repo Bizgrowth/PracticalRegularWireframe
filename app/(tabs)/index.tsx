@@ -469,8 +469,57 @@ const styles = StyleSheet.create({
   answerContainer: {
     marginTop: 15,
     padding: 15,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+  },
+  answerText: {
+    fontSize: 14,
+    color: '#212529',
+    lineHeight: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 12,
+    width: '90%',
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  strategyOption: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  strategyOptionText: {
+    fontSize: 16,
+    color: '#333333',
+    fontWeight: '500',
+  },
+  closeButton: {
+    marginTop: 15,
+    padding: 12,
+    backgroundColor: '#6c757d',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   answer: {
     marginTop: 5,
