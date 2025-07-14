@@ -52,15 +52,16 @@ export default function NewsScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#2196F3', dark: '#1976D2' }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="newspaper"
-          style={styles.headerImage}
-        />
-      }>
+          <IconSymbol
+            size={310}
+            color="#FF9500"
+            name="newspaper"
+            style={styles.headerImage}
+          />
+        }
+        headerBackgroundColor={{ light: '#FFFBF0', dark: '#1C1C1E' }}
+      >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Crypto News & Learning</ThemedText>
       </ThemedView>

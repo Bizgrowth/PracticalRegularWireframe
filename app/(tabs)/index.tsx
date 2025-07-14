@@ -1,4 +1,3 @@
-
 import { Image } from "expo-image";
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList, Alert } from "react-native";
 import { useState, useEffect } from "react";
@@ -227,7 +226,7 @@ export default function HomeScreen() {
           recommendation: 'Speculative Buy'
         }
       ];
-      
+
       setInvestments(mockInvestments);
     } catch (error) {
       console.error('Investment Generation Error:', error);
@@ -278,7 +277,7 @@ export default function HomeScreen() {
           </ThemedText>
         </ThemedView>
       </ThemedView>
-      
+
       <ThemedView style={styles.priceRow}>
         <ThemedText type="defaultSemiBold" style={styles.price}>
           {item.price}
@@ -287,15 +286,15 @@ export default function HomeScreen() {
           {item.change24h}
         </ThemedText>
       </ThemedView>
-      
+
       <ThemedText type="caption" style={styles.marketCap}>
         Market Cap: {item.marketCap}
       </ThemedText>
-      
+
       <ThemedText style={styles.analysis}>
         {item.analysis}
       </ThemedText>
-      
+
       <ThemedView style={[styles.recommendationBadge, { backgroundColor: tintColor }]}>
         <ThemedText style={[styles.recommendation, { color: '#FFFFFF' }]}>
           {item.recommendation}
@@ -306,13 +305,13 @@ export default function HomeScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
+      }
+      headerBackgroundColor={{ light: '#F8F9FA', dark: '#1A1A1A' }}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Crypto AI Expert</ThemedText>
         <HelloWave />
@@ -381,7 +380,7 @@ export default function HomeScreen() {
               {loading ? 'Analyzing...' : 'Ask AI'}
             </ThemedText>
           </TouchableOpacity>
-          
+
           {aiResponse ? (
             <ThemedView style={[styles.aiResponseContainer, { backgroundColor: cardColor, borderColor }]}>
               <ThemedText style={styles.aiResponse}>
@@ -406,7 +405,7 @@ export default function HomeScreen() {
               </ThemedText>
             </TouchableOpacity>
           </ThemedView>
-          
+
           <FlatList
             data={investmentStrategies}
             keyExtractor={(item) => item.id}

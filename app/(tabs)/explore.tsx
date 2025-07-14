@@ -76,15 +76,15 @@ export default function PortfolioScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#4CAF50', dark: '#2E7D32' }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="dollarsign.circle"
-          style={styles.headerImage}
-        />
-      }>
+          <IconSymbol
+            size={310}
+            color="#34C759"
+            name="dollarsign.circle"
+            style={styles.headerImage}
+          />
+        }
+        headerBackgroundColor={{ light: '#F0F9FF', dark: '#0A0A0A' }}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Portfolio Tracker</ThemedText>
       </ThemedView>
