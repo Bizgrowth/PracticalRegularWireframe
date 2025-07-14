@@ -1,13 +1,18 @@
 
 import { Image } from "expo-image";
-import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, RefreshControl } from "react-native";
+import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, RefreshControl, Modal } from "react-native";
 import { useState, useEffect } from "react";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { CryptoAnalysisService, InvestmentRecommendation } from "@/services/cryptoAnalysis";
+import { 
+  CryptoAnalysisService, 
+  InvestmentRecommendation, 
+  InvestmentStrategy, 
+  INVESTMENT_STRATEGIES 
+} from "@/services/cryptoAnalysis";
 import { Collapsible } from "@/components/Collapsible";
 
 export default function HomeScreen() {
@@ -17,6 +22,8 @@ export default function HomeScreen() {
   const [recommendations, setRecommendations] = useState<InvestmentRecommendation[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [selectedStrategy, setSelectedStrategy] = useState<InvestmentStrategy>('wealth_building');
+  const [showStrategyModal, setShowStrategyModal] = useState(false);
 
   useEffect(() => {
     loadRecommendations();
@@ -26,7 +33,7 @@ export default function HomeScreen() {
     try {
       setRefreshing(true);
       const cryptos = await CryptoAnalysisService.fetchTopCryptos();
-      const top10 = CryptoAnalysisService.generateTop10Recommendations(cryptos);
+      const top10 = CryptoAnalysisService.generateTop10Recommendations(cryptos, selectedStrategy);
       setRecommendations(top10);
       setLastUpdated(new Date());
     } catch (error) {
@@ -35,6 +42,10 @@ export default function HomeScreen() {
       setRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    loadRecommendations();
+  }, [selectedStrategy]);
 
   const askAI = async () => {
     if (!question.trim()) return;
@@ -97,10 +108,37 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </ThemedView>
 
+      <ThemedView style={styles.strategyContainer}>
+        <ThemedText type="subtitle">Investment Strategy</ThemedText>
+        <TouchableOpacity 
+          style={styles.strategySelector} 
+          onPress={() => setShowStrategyModal(true)}
+        >
+          <ThemedText style={styles.strategyText}>
+            {INVESTMENT_STRATEGIES[selectedStrategy].name}
+          </ThemedText>
+          <ThemedText style={styles.strategyArrow}>▼</ThemedText>
+        </TouchableOpacity>
+        <ThemedText style={styles.strategyDescription}>
+          {INVESTMENT_STRATEGIES[selectedStrategy].description}
+        </ThemedText>
+        <ThemedView style={styles.strategyDetails}>
+          <ThemedText style={styles.strategyDetail}>
+            🎯 Goal: {INVESTMENT_STRATEGIES[selectedStrategy].goal}
+          </ThemedText>
+          <ThemedText style={styles.strategyDetail}>
+            ⏱️ Time: {INVESTMENT_STRATEGIES[selectedStrategy].timeHorizon}
+          </ThemedText>
+          <ThemedText style={styles.strategyDetail}>
+            ⚠️ Risk: {INVESTMENT_STRATEGIES[selectedStrategy].riskLevel}
+          </ThemedText>
+        </ThemedView>
+      </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">🏆 Today's Top 10 Investment Picks</ThemedText>
+        <ThemedText type="subtitle">🏆 Top 10 Picks - {INVESTMENT_STRATEGIES[selectedStrategy].name}</ThemedText>
         <ThemedText style={styles.disclaimer}>
-          Based on 90-day analysis & future projections
+          Customized analysis based on your selected strategy
         </ThemedText>
         
         {recommendations.map((rec) => (
@@ -195,6 +233,57 @@ export default function HomeScreen() {
           </ThemedView>
         </ThemedView>
       </ThemedView>
+
+      <Modal
+        visible={showStrategyModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowStrategyModal(false)}
+      >
+        <ThemedView style={styles.modalOverlay}>
+          <ThemedView style={styles.modalContent}>
+            <ThemedText type="subtitle" style={styles.modalTitle}>
+              Select Investment Strategy
+            </ThemedText>
+            <ScrollView style={styles.strategyList}>
+              {Object.entries(INVESTMENT_STRATEGIES).map(([key, strategy]) => (
+                <TouchableOpacity
+                  key={key}
+                  style={[
+                    styles.strategyOption,
+                    selectedStrategy === key && styles.selectedStrategyOption
+                  ]}
+                  onPress={() => {
+                    setSelectedStrategy(key as InvestmentStrategy);
+                    setShowStrategyModal(false);
+                  }}
+                >
+                  <ThemedText style={styles.strategyOptionTitle}>
+                    {strategy.name}
+                  </ThemedText>
+                  <ThemedText style={styles.strategyOptionDescription}>
+                    {strategy.description}
+                  </ThemedText>
+                  <ThemedView style={styles.strategyOptionDetails}>
+                    <ThemedText style={styles.strategyOptionDetail}>
+                      Risk: {strategy.riskLevel}
+                    </ThemedText>
+                    <ThemedText style={styles.strategyOptionDetail}>
+                      Time: {strategy.timeHorizon}
+                    </ThemedText>
+                  </ThemedView>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setShowStrategyModal(false)}
+            >
+              <ThemedText style={styles.modalCloseText}>Close</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+      </Modal>
     </ParallaxScrollView>
   );
 }
@@ -379,6 +468,108 @@ const styles = StyleSheet.create({
   },
   change: {
     color: '#22c55e',
+    fontWeight: 'bold',
+  },
+  strategyContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+  },
+  strategySelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#FFB800',
+  },
+  strategyText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFB800',
+  },
+  strategyArrow: {
+    color: '#FFB800',
+    fontSize: 12,
+  },
+  strategyDescription: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  strategyDetails: {
+    marginTop: 8,
+    gap: 4,
+  },
+  strategyDetail: {
+    fontSize: 11,
+    color: '#444',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    margin: 20,
+    borderRadius: 12,
+    padding: 20,
+    maxHeight: '80%',
+    width: '90%',
+  },
+  modalTitle: {
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  strategyList: {
+    maxHeight: 400,
+  },
+  strategyOption: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  selectedStrategyOption: {
+    backgroundColor: '#fff3e0',
+    borderColor: '#FFB800',
+    borderWidth: 2,
+  },
+  strategyOptionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  strategyOptionDescription: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+  },
+  strategyOptionDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  strategyOptionDetail: {
+    fontSize: 10,
+    color: '#888',
+  },
+  modalCloseButton: {
+    backgroundColor: '#FFB800',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  modalCloseText: {
+    color: '#000',
     fontWeight: 'bold',
   },
 });
