@@ -1,12 +1,13 @@
 
 import { Image } from "expo-image";
-import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList } from "react-native";
 import { useState } from "react";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { INVESTMENT_STRATEGIES, InvestmentStrategy } from "@/types/investment";
 
 export default function HomeScreen() {
   const [question, setQuestion] = useState('');
@@ -16,6 +17,9 @@ export default function HomeScreen() {
   const [loadingInvestments, setLoadingInvestments] = useState(false);
   const [marketTrends, setMarketTrends] = useState('');
   const [loadingTrends, setLoadingTrends] = useState(false);
+  const [selectedStrategy, setSelectedStrategy] = useState<InvestmentStrategy>(INVESTMENT_STRATEGIES[0]);
+  const [showStrategyModal, setShowStrategyModal] = useState(false);
+  const [strategyRecommendations, setStrategyRecommendations] = useState('');
 
   const testOpenAI = async () => {
     setLoading(true);
@@ -40,6 +44,26 @@ export default function HomeScreen() {
     } catch (error) {
       console.error('Investment Generation Error:', error);
       setTopInvestments(`❌ Failed to generate investments: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setLoadingInvestments(false);
+    }
+  };
+
+  const generateStrategyRecommendations = async () => {
+    setLoadingInvestments(true);
+    try {
+      const { generateStrategyBasedRecommendations } = await import('@/services/aiAnalysis');
+      const recommendations = await generateStrategyBasedRecommendations(
+        selectedStrategy.id,
+        selectedStrategy.name,
+        selectedStrategy.riskLevel,
+        selectedStrategy.timeHorizon,
+        selectedStrategy.weights
+      );
+      setStrategyRecommendations(recommendations);
+    } catch (error) {
+      console.error('Strategy Generation Error:', error);
+      setStrategyRecommendations(`❌ Failed to generate strategy recommendations: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoadingInvestments(false);
     }
@@ -136,18 +160,51 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">🎯 Daily Top 10 Investment Recommendations</ThemedText>
+        <ThemedText type="subtitle">🎯 Strategy-Based Investment Recommendations</ThemedText>
         <ThemedText style={styles.description}>
-          Expert AI-curated investment picks based on 90-day performance, fundamentals, and growth catalysts.
+          Select your investment strategy and get AI-curated recommendations tailored to your risk tolerance and time horizon.
         </ThemedText>
-        <TouchableOpacity style={styles.investmentButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
+        
+        <TouchableOpacity style={styles.strategySelector} onPress={() => setShowStrategyModal(true)}>
+          <ThemedView style={styles.strategyInfo}>
+            <ThemedText type="defaultSemiBold" style={styles.strategyName}>{selectedStrategy.name}</ThemedText>
+            <ThemedText style={styles.strategyDetails}>
+              Risk: {selectedStrategy.riskLevel} | Time: {selectedStrategy.timeHorizon}
+            </ThemedText>
+            <ThemedText style={styles.strategyDescription}>{selectedStrategy.description}</ThemedText>
+          </ThemedView>
+          <ThemedText style={styles.dropdownArrow}>▼</ThemedText>
+        </TouchableOpacity>
+
+        <ThemedView style={styles.strategyFeatures}>
+          <ThemedText type="defaultSemiBold">Strategy Features:</ThemedText>
+          {selectedStrategy.features.map((feature, index) => (
+            <ThemedText key={index} style={styles.feature}>• {feature}</ThemedText>
+          ))}
+        </ThemedView>
+
+        <TouchableOpacity style={styles.investmentButton} onPress={generateStrategyRecommendations} disabled={loadingInvestments}>
           <ThemedText style={styles.buttonText}>
-            {loadingInvestments ? 'Curating Investments...' : 'Generate Expert Top 10'}
+            {loadingInvestments ? 'Analyzing Strategy...' : `Generate ${selectedStrategy.name} Picks`}
+          </ThemedText>
+        </TouchableOpacity>
+
+        {strategyRecommendations && (
+          <ThemedView style={styles.investmentContainer}>
+            <ThemedText type="defaultSemiBold">🎯 Strategy-Based Recommendations:</ThemedText>
+            <ThemedText style={styles.investments}>{strategyRecommendations}</ThemedText>
+          </ThemedView>
+        )}
+
+        <ThemedText type="subtitle" style={styles.generalTitle}>📊 General Market Recommendations</ThemedText>
+        <TouchableOpacity style={styles.generalButton} onPress={generateDailyTop10} disabled={loadingInvestments}>
+          <ThemedText style={styles.buttonText}>
+            {loadingInvestments ? 'Curating Investments...' : 'Generate General Top 10'}
           </ThemedText>
         </TouchableOpacity>
         {topInvestments && (
-          <ThemedView style={styles.investmentContainer}>
-            <ThemedText type="defaultSemiBold">🏆 Today's Expert Investment Picks:</ThemedText>
+          <ThemedView style={styles.generalContainer}>
+            <ThemedText type="defaultSemiBold">🏆 General Market Picks:</ThemedText>
             <ThemedText style={styles.investments}>{topInvestments}</ThemedText>
           </ThemedView>
         )}
@@ -175,6 +232,41 @@ export default function HomeScreen() {
           Access expert knowledge on blockchain technology, trading strategies, and investment opportunities.
         </ThemedText>
       </ThemedView>
+
+      <Modal visible={showStrategyModal} animationType="slide" transparent>
+        <ThemedView style={styles.modalOverlay}>
+          <ThemedView style={styles.modalContainer}>
+            <ThemedView style={styles.modalHeader}>
+              <ThemedText type="subtitle">Select Investment Strategy</ThemedText>
+              <TouchableOpacity onPress={() => setShowStrategyModal(false)}>
+                <ThemedText style={styles.closeButton}>✕</ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+            <FlatList
+              data={INVESTMENT_STRATEGIES}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.strategyOption,
+                    selectedStrategy.id === item.id && styles.selectedStrategy
+                  ]}
+                  onPress={() => {
+                    setSelectedStrategy(item);
+                    setShowStrategyModal(false);
+                    setStrategyRecommendations(''); // Clear previous recommendations
+                  }}
+                >
+                  <ThemedText type="defaultSemiBold" style={styles.optionName}>{item.name}</ThemedText>
+                  <ThemedText style={styles.optionRisk}>Risk: {item.riskLevel} | {item.timeHorizon}</ThemedText>
+                  <ThemedText style={styles.optionDescription}>{item.description}</ThemedText>
+                </TouchableOpacity>
+              )}
+              style={styles.strategyList}
+            />
+          </ThemedView>
+        </ThemedView>
+      </Modal>
     </ParallaxScrollView>
   );
 }
@@ -300,5 +392,125 @@ const styles = StyleSheet.create({
     marginTop: 8,
     lineHeight: 22,
     fontSize: 14,
+  },
+  strategySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 15,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  strategyInfo: {
+    flex: 1,
+  },
+  strategyName: {
+    fontSize: 16,
+    color: '#2c3e50',
+    marginBottom: 4,
+  },
+  strategyDetails: {
+    fontSize: 12,
+    color: '#7f8c8d',
+    marginBottom: 4,
+  },
+  strategyDescription: {
+    fontSize: 13,
+    color: '#555',
+    lineHeight: 18,
+  },
+  dropdownArrow: {
+    fontSize: 16,
+    color: '#7f8c8d',
+    marginLeft: 10,
+  },
+  strategyFeatures: {
+    backgroundColor: '#f0f8ff',
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 8,
+  },
+  feature: {
+    fontSize: 13,
+    color: '#2c3e50',
+    marginVertical: 2,
+  },
+  generalTitle: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  generalButton: {
+    backgroundColor: '#95a5a6',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  generalContainer: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#95a5a6',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    maxHeight: '80%',
+    width: '90%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  closeButton: {
+    fontSize: 24,
+    color: '#7f8c8d',
+    fontWeight: 'bold',
+  },
+  strategyList: {
+    maxHeight: 400,
+  },
+  strategyOption: {
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 5,
+    backgroundColor: '#f8f9fa',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  selectedStrategy: {
+    backgroundColor: '#e3f2fd',
+    borderColor: '#2196f3',
+  },
+  optionName: {
+    fontSize: 16,
+    color: '#2c3e50',
+    marginBottom: 4,
+  },
+  optionRisk: {
+    fontSize: 12,
+    color: '#7f8c8d',
+    marginBottom: 4,
+  },
+  optionDescription: {
+    fontSize: 13,
+    color: '#555',
+    lineHeight: 18,
   },
 });

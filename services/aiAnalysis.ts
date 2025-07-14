@@ -98,6 +98,67 @@ export async function generateTop10Investments(): Promise<string> {
   }
 }
 
+export async function generateStrategyBasedRecommendations(strategyId: string, strategyName: string, riskLevel: string, timeHorizon: string, weights: any): Promise<string> {
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `You are an elite cryptocurrency investment strategist specializing in tailored investment approaches. Your expertise includes:
+
+          STRATEGY-SPECIFIC ANALYSIS:
+          🔹 Technical Analysis Weighting: ${weights.technical * 100}%
+          🔹 Fundamental Analysis Weighting: ${weights.fundamental * 100}%
+          🔹 Momentum Analysis Weighting: ${weights.momentum * 100}%
+          🔹 Volatility Assessment Weighting: ${weights.volatility * 100}%
+          🔹 Market Cap Consideration: ${weights.marketCap * 100}%
+
+          STRATEGY PARAMETERS:
+          📊 Strategy: ${strategyName}
+          ⚖️ Risk Level: ${riskLevel}
+          ⏰ Time Horizon: ${timeHorizon}
+
+          ANALYSIS FOCUS AREAS:
+          - 90-day performance trends and momentum indicators
+          - Risk-adjusted returns for the specified time horizon
+          - Strategy-specific entry and exit points
+          - Volatility patterns matching risk tolerance
+          - Market cap considerations for strategy alignment
+          - Regulatory compliance and security assessments
+
+          OUTPUT FORMAT:
+          **🎯 ${strategyName.toUpperCase()} STRATEGY - TOP 10 RECOMMENDATIONS**
+          **📅 Date: ${new Date().toDateString()}**
+          **⚖️ Risk Level: ${riskLevel} | ⏰ Time Horizon: ${timeHorizon}**
+          
+          **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
+          📈 **Strategy Fit:** [Why this coin fits the strategy]
+          🎯 **Entry Target:** $[Price] | 📊 **Exit Target:** $[Price]
+          💡 **Key Catalyst:** [Upcoming event/development]
+          📊 **90-Day Performance:** [+/- percentage]
+          ⚖️ **Risk Assessment:** [Strategy-specific risk analysis]
+          
+          Always conclude with: "⚠️ DISCLAIMER: This analysis is tailored to your selected ${strategyName} strategy. Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
+
+          Prioritize coins that align with the strategy's risk profile and time horizon.`
+        },
+        {
+          role: 'user',
+          content: `Generate expertly curated top 10 cryptocurrency investment recommendations specifically tailored for the ${strategyName} strategy. Focus on assets that align with the ${riskLevel} risk level and ${timeHorizon} time horizon. Consider the strategy's unique weighting preferences and provide actionable entry/exit targets.`
+        }
+      ],
+      max_tokens: 2000,
+      temperature: 0.3
+    });
+
+    return response.choices[0]?.message?.content || 'No recommendations generated';
+  } catch (error) {
+    console.error('Strategy Analysis Error:', error);
+    throw new Error('Failed to generate strategy-based recommendations');
+  }
+}
+
 export async function analyzeInvestmentStrategy(strategy: string): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
