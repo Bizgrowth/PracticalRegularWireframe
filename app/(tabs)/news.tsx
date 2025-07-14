@@ -1,4 +1,3 @@
-
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useState } from 'react';
@@ -65,7 +64,7 @@ export default function NewsScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Crypto News & Learning</ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle">Latest News</ThemedText>
         {news.map((item) => (
@@ -89,7 +88,7 @@ export default function NewsScreen() {
         <ThemedText>
           Bitcoin is a decentralized digital currency that operates without a central bank or single administrator.
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           How to Get Started
         </ThemedText>
@@ -105,14 +104,14 @@ export default function NewsScreen() {
         <ThemedText>
           Invest a fixed amount regularly regardless of price to reduce volatility impact.
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           HODL Strategy
         </ThemedText>
         <ThemedText>
           Hold your investments for the long term, ignoring short-term price fluctuations.
         </ThemedText>
-        
+
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Technical Analysis
         </ThemedText>
@@ -204,5 +203,10 @@ const styles = StyleSheet.create({
   guideTitle: {
     marginTop: 15,
     marginBottom: 5,
+  },
+  newsItemContainer: {
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#d0d0d0',
   },
 });

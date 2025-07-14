@@ -13,24 +13,31 @@ export default function HomeScreen() {
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const testOpenAI = async () => {
+    setLoading(true);
+    try {
+      const { analyzeWithAI } = await import('@/services/aiAnalysis');
+      const response = await analyzeWithAI('Test connection - what is Bitcoin?');
+      setAnswer('✅ OpenAI API Key Working! Response: ' + response);
+    } catch (error) {
+      console.error('OpenAI Test Error:', error);
+      setAnswer(`❌ OpenAI API Key Test Failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const askAI = async () => {
     if (!question.trim()) return;
     
     setLoading(true);
     try {
-      // This would connect to your AI API
-      const response = await fetch('/api/ask', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question }),
-      });
-      
-      const data = await response.json();
-      setAnswer(data.answer || 'Sorry, I couldn\'t process your question.');
+      const { analyzeWithAI } = await import('@/services/aiAnalysis');
+      const response = await analyzeWithAI(question);
+      setAnswer(response);
     } catch (error) {
-      setAnswer('Error connecting to AI service. Please try again.');
+      console.error('AI Error:', error);
+      setAnswer(`Error: ${error instanceof Error ? error.message : 'Failed to get AI response'}`);
     } finally {
       setLoading(false);
     }
@@ -63,6 +70,11 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.askButton} onPress={askAI} disabled={loading}>
           <ThemedText style={styles.buttonText}>
             {loading ? 'Thinking...' : 'Ask AI Expert'}
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.testButton} onPress={testOpenAI} disabled={loading}>
+          <ThemedText style={styles.buttonText}>
+            {loading ? 'Testing...' : 'Test OpenAI Key'}
           </ThemedText>
         </TouchableOpacity>
         {answer && (
@@ -127,6 +139,13 @@ const styles = StyleSheet.create({
   },
   askButton: {
     backgroundColor: '#FFB800',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  testButton: {
+    backgroundColor: '#2E86C1',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',

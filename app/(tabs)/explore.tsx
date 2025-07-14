@@ -1,4 +1,3 @@
-
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useState } from 'react';
@@ -23,7 +22,7 @@ export default function PortfolioScreen() {
     { id: '1', coin: 'BTC', amount: 0.5, buyPrice: 40000, currentPrice: 43250 },
     { id: '2', coin: 'ETH', amount: 2.0, buyPrice: 2500, currentPrice: 2650 },
   ]);
-  
+
   const [newCoin, setNewCoin] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [newPrice, setNewPrice] = useState('');
@@ -72,7 +71,7 @@ export default function PortfolioScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Portfolio Tracker</ThemedText>
       </ThemedView>
-      
+
       <ThemedView style={styles.summaryContainer}>
         <ThemedText type="subtitle">Portfolio Summary</ThemedText>
         <ThemedView style={styles.summaryRow}>
@@ -225,5 +224,9 @@ const styles = StyleSheet.create({
   },
   priceInfo: {
     alignItems: 'flex-end',
+  },
+  description: {
+    color: '#666',
+    lineHeight: 20,
   },
 });
