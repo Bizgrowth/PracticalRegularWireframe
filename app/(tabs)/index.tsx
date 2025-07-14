@@ -6,6 +6,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 interface InvestmentStrategy {
@@ -306,9 +307,11 @@ export default function HomeScreen() {
   return (
     <ParallaxScrollView
       headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+        <IconSymbol
+          size={200}
+          color="#FF9500"
+          name="bitcoinsign.circle"
+          style={styles.headerIcon}
         />
       }
       headerBackgroundColor={{ light: '#F8F9FA', dark: '#1A1A1A' }}>
@@ -628,11 +631,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  headerIcon: {
+    bottom: -50,
+    left: -35,
     position: 'absolute',
   },
 });
