@@ -1,3 +1,4 @@
+
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useState } from 'react';
@@ -63,7 +64,7 @@ export default function PortfolioScreen() {
       stopLoss: 80
     },
   ]);
-
+  
   const [newCoin, setNewCoin] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [newPrice, setNewPrice] = useState('');
@@ -173,10 +174,10 @@ export default function PortfolioScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Advanced Portfolio</ThemedText>
       </ThemedView>
-
+      
       <ThemedView style={styles.metricsContainer}>
         <ThemedText type="subtitle">Portfolio Analytics</ThemedText>
-
+        
         <ThemedView style={styles.mainMetrics}>
           <ThemedView style={styles.metricCard}>
             <ThemedText style={styles.metricLabel}>Total Value</ThemedText>
@@ -266,7 +267,7 @@ export default function PortfolioScreen() {
           const { pnl, percentage } = calculatePnL(item);
           const positionStatus = getPositionStatus(item);
           const daysHeld = Math.floor((Date.now() - new Date(item.buyDate).getTime()) / (1000 * 60 * 60 * 24));
-
+          
           return (
             <ThemedView key={item.id} style={styles.portfolioItem}>
               <ThemedView style={styles.itemHeader}>
@@ -284,7 +285,7 @@ export default function PortfolioScreen() {
                   <ThemedText style={styles.removeButton}>✕</ThemedText>
                 </TouchableOpacity>
               </ThemedView>
-
+              
               <ThemedView style={styles.priceInfo}>
                 <ThemedView style={styles.priceRow}>
                   <ThemedText style={styles.priceLabel}>Buy:</ThemedText>
@@ -322,7 +323,7 @@ export default function PortfolioScreen() {
         <ThemedText>• Set stop losses at 15-20% below entry price</ThemedText>
         <ThemedText>• Take profits at 50-100% gains for altcoins</ThemedText>
         <ThemedText>• Use position sizing (max 5% per trade)</ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.strategyTitle}>
           Portfolio Allocation
         </ThemedText>
@@ -348,20 +349,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   metricsContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f5f5f5',
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   mainMetrics: {
     flexDirection: 'row',
@@ -378,7 +369,7 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 12,
-    color: '#444444',
+    color: '#666',
     marginBottom: 5,
   },
   metricValue: {
@@ -403,7 +394,7 @@ const styles = StyleSheet.create({
   },
   performanceLabel: {
     fontSize: 11,
-    color: '#444444',
+    color: '#666',
     marginBottom: 3,
   },
   performanceValue: {
@@ -419,9 +410,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
     fontSize: 16,
-    color: '#333',
   },
   addButton: {
     backgroundColor: '#4CAF50',
@@ -457,11 +447,11 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 12,
-    color: '#444444',
+    color: '#666',
   },
   daysHeld: {
     fontSize: 11,
-    color: '#555555',
+    color: '#888',
   },
   statusBadge: {
     marginRight: 10,
@@ -486,7 +476,7 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 12,
-    color: '#444444',
+    color: '#666',
   },
   targetPrice: {
     color: '#22c55e',
@@ -513,94 +503,10 @@ const styles = StyleSheet.create({
   },
   positionValue: {
     fontSize: 12,
-    color: '#444444',
+    color: '#666',
   },
   strategyTitle: {
     marginTop: 15,
-    marginBottom: 10,
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  strategyText: {
-    fontSize: 14,
-    color: '#444444',
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 10,
-  },
-  sectionContent: {
-    fontSize: 14,
-    color: '#444444',
-    lineHeight: 20,tom: 5,
-  },
-});
-import { StyleSheet, ScrollView } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useThemeColor } from '@/hooks/useThemeColor';
-import { getCryptoAnalysis } from '@/services/cryptoAnalysis';
-
-export default function TabTwoScreen() {
-  const colorScheme = useColorScheme();
-  const [analysis, setAnalysis] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  const backgroundColor = useThemeColor({}, 'background');
-  const cardBackground = useThemeColor({}, 'cardBackground');
-  const textColor = useThemeColor({}, 'text');
-  const borderColor = useThemeColor({}, 'border');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  strategyCard: {
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  strategyTitle: {
-    marginTop: 15,
-    marginBottom: 10,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  strategyText: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  sectionContent: {
-    fontSize: 14,
-    lineHeight: 20,
+    marginBottom: 5,
   },
 });

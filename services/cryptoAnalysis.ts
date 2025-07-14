@@ -134,11 +134,8 @@ export const INVESTMENT_STRATEGIES: Record<InvestmentStrategy, StrategyConfig> =
   }
 };
 
-import { AIAnalysisService, AIMarketInsight, AITradingStrategy } from './aiAnalysis';
-
 export class CryptoAnalysisService {
   private static readonly API_BASE = 'https://api.coingecko.com/api/v3';
-  private static aiInsights: AIMarketInsight | null = null;
   
   static async fetchTopCryptos(): Promise<CryptoData[]> {
     try {
@@ -174,21 +171,6 @@ export class CryptoAnalysisService {
     } catch (error) {
       console.error('Error fetching crypto data:', error);
       return this.getMockData();
-    }
-  }
-
-  static async generateTop10RecommendationsWithAI(
-    cryptos: CryptoData[], 
-    strategy: InvestmentStrategy = 'wealth_building'
-  ): Promise<InvestmentRecommendation[]> {
-    try {
-      // Get AI market insights
-      this.aiInsights = await AIAnalysisService.analyzeMarketWithAI(cryptos, strategy);
-      
-      return this.generateTop10Recommendations(cryptos, strategy);
-    } catch (error) {
-      console.error('AI analysis failed, falling back to standard analysis:', error);
-      return this.generateTop10Recommendations(cryptos, strategy);
     }
   }
 
@@ -307,16 +289,6 @@ export class CryptoAnalysisService {
   private static generateStrategyReasoning(crypto: CryptoData, strategy: InvestmentStrategy): string {
     const reasons = [];
     
-    // Add AI insights if available
-    if (this.aiInsights && this.aiInsights.keyFactors.length > 0) {
-      const relevantFactor = this.aiInsights.keyFactors[0];
-      if (relevantFactor && crypto.symbol === 'BTC' && relevantFactor.includes('Bitcoin')) {
-        reasons.push("AI Analysis: " + relevantFactor.substring(0, 50) + "...");
-      } else if (crypto.market_cap > 10000000000) {
-        reasons.push(`AI Insight: Market showing ${this.aiInsights.sentiment.toLowerCase()} sentiment`);
-      }
-    }
-    
     switch (strategy) {
       case 'wealth_building':
       case 'long_term_hold':
@@ -347,22 +319,6 @@ export class CryptoAnalysisService {
     }
 
     return reasons.length > 0 ? reasons.join(", ") : "Fits strategy criteria";
-  }
-
-  static async getAIMarketInsights(): Promise<AIMarketInsight | null> {
-    return this.aiInsights;
-  }
-
-  static async askCryptoExpert(question: string, context?: any): Promise<string> {
-    return AIAnalysisService.answerCryptoQuestion(question, context);
-  }
-
-  static async generateTradingStrategy(
-    crypto: CryptoData, 
-    strategy: InvestmentStrategy, 
-    riskTolerance: 'Low' | 'Medium' | 'High'
-  ): Promise<AITradingStrategy> {
-    return AIAnalysisService.generateTradingStrategy(crypto, strategy, riskTolerance);
   }
 
   private static generateStrategyEntry(crypto: CryptoData, strategy: InvestmentStrategy): string {

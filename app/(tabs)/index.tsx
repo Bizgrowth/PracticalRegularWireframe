@@ -1,3 +1,4 @@
+
 import { Image } from "expo-image";
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, TextInput, RefreshControl, Modal } from "react-native";
 import { useState, useEffect } from "react";
@@ -12,14 +13,9 @@ import {
   InvestmentStrategy, 
   INVESTMENT_STRATEGIES 
 } from "@/services/cryptoAnalysis";
-import { AIMarketInsight } from "@/services/aiAnalysis";
 import { Collapsible } from "@/components/Collapsible";
-import { AIInsights } from "@/components/AIInsights";
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function HomeScreen() {
-  const colorScheme = useColorScheme();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,7 +24,6 @@ export default function HomeScreen() {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [selectedStrategy, setSelectedStrategy] = useState<InvestmentStrategy>('wealth_building');
   const [showStrategyModal, setShowStrategyModal] = useState(false);
-  const [aiInsights, setAiInsights] = useState<AIMarketInsight | null>(null);
 
   useEffect(() => {
     loadRecommendations();
@@ -38,13 +33,8 @@ export default function HomeScreen() {
     try {
       setRefreshing(true);
       const cryptos = await CryptoAnalysisService.fetchTopCryptos();
-      const top10 = await CryptoAnalysisService.generateTop10RecommendationsWithAI(cryptos, selectedStrategy);
+      const top10 = CryptoAnalysisService.generateTop10Recommendations(cryptos, selectedStrategy);
       setRecommendations(top10);
-
-      // Get AI insights
-      const insights = await CryptoAnalysisService.getAIMarketInsights();
-      setAiInsights(insights);
-
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Error loading recommendations:', error);
@@ -59,29 +49,22 @@ export default function HomeScreen() {
 
   const askAI = async () => {
     if (!question.trim()) return;
-
+    
     setLoading(true);
     try {
-      // Get market context for AI
-      const marketInsights = await CryptoAnalysisService.getAIMarketInsights();
-      const context = {
-        selectedStrategy,
-        marketInsights,
-        topRecommendations: recommendations.slice(0, 3)
-      };
-
-      // Use AI crypto expert service
-      const aiResponse = await CryptoAnalysisService.askCryptoExpert(question, context);
-      setAnswer(aiResponse);
-    } catch (error) {
-      console.error('AI analysis error:', error);
-      // Fallback to enhanced responses
-      const enhancedResponses = [
-        `Regarding "${question}" - Current market analysis suggests focusing on fundamental strength over short-term volatility. With your ${INVESTMENT_STRATEGIES[selectedStrategy].name} strategy, consider gradual position building during market uncertainty.`,
-        `For your question about "${question}" - Technical indicators point to selective opportunities in established cryptocurrencies. Your selected ${INVESTMENT_STRATEGIES[selectedStrategy].name} approach aligns well with current market dynamics.`,
-        `Analyzing "${question}" in the context of your strategy - Risk management remains paramount. Consider the ${INVESTMENT_STRATEGIES[selectedStrategy].riskLevel} risk profile of your chosen approach when making investment decisions.`,
+      // Mock AI response for crypto questions
+      const responses = [
+        "Based on current market analysis, Bitcoin shows strong institutional support with increasing adoption. Consider dollar-cost averaging for long-term positions.",
+        "Ethereum's transition to proof-of-stake has improved its fundamentals. The upcoming Shanghai upgrade could provide additional upside potential.",
+        "Market volatility is expected to continue. Focus on projects with strong fundamentals and real-world utility. Diversification across different crypto sectors is recommended.",
+        "DeFi tokens are showing renewed interest. Look for protocols with sustainable yield mechanisms and strong governance. Always assess smart contract risks.",
+        "For trading strategies, consider the 20/50 EMA crossover on daily charts. Combine with RSI divergence for better entry points."
       ];
-      setAnswer(enhancedResponses[Math.floor(Math.random() * enhancedResponses.length)]);
+      
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      setAnswer(randomResponse);
+    } catch (error) {
+      setAnswer('Error connecting to AI service. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -152,14 +135,12 @@ export default function HomeScreen() {
         </ThemedView>
       </ThemedView>
 
-      {aiInsights && <AIInsights insights={aiInsights} />}
-
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">🏆 Top 10 Picks - {INVESTMENT_STRATEGIES[selectedStrategy].name}</ThemedText>
         <ThemedText style={styles.disclaimer}>
           Customized analysis based on your selected strategy
         </ThemedText>
-
+        
         {recommendations.map((rec) => (
           <ThemedView key={rec.crypto.id} style={styles.recommendationCard}>
             <ThemedView style={styles.rankHeader}>
@@ -177,7 +158,7 @@ export default function HomeScreen() {
                 </ThemedText>
               </ThemedView>
             </ThemedView>
-
+            
             <ThemedView style={styles.priceContainer}>
               <ThemedText style={styles.currentPrice}>${rec.crypto.current_price.toLocaleString()}</ThemedText>
               <ThemedText style={[
@@ -215,7 +196,7 @@ export default function HomeScreen() {
           </ThemedView>
         ))}
       </ThemedView>
-
+      
       <Collapsible title="Ask the Crypto Expert AI">
         <TextInput
           style={styles.input}
@@ -330,14 +311,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
     padding: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f0f0f0',
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   updateText: {
     fontSize: 12,
-    color: '#333333',
+    color: '#666',
   },
   refreshButton: {
     color: '#FFB800',
@@ -346,25 +325,17 @@ const styles = StyleSheet.create({
   },
   disclaimer: {
     fontSize: 12,
-    color: '#555',
+    color: '#666',
     fontStyle: 'italic',
     marginBottom: 10,
   },
   recommendationCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
     padding: 15,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#d0d0d0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderColor: '#e0e0e0',
   },
   rankHeader: {
     flexDirection: 'row',
@@ -390,7 +361,7 @@ const styles = StyleSheet.create({
   },
   cryptoName: {
     fontSize: 12,
-    color: '#333333',
+    color: '#666',
   },
   scoreContainer: {
     alignItems: 'flex-end',
@@ -438,7 +409,7 @@ const styles = StyleSheet.create({
   },
   reasoning: {
     fontSize: 12,
-    color: '#333333',
+    color: '#444',
     marginBottom: 5,
     fontStyle: 'italic',
   },
@@ -471,57 +442,8 @@ const styles = StyleSheet.create({
   answerContainer: {
     marginTop: 15,
     padding: 15,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f0f0',
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-  },
-  answerText: {
-    fontSize: 14,
-    color: '#212529',
-    lineHeight: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#ffffff',
-    padding: 20,
-    borderRadius: 12,
-    width: '90%',
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  strategyOption: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  strategyOptionText: {
-    fontSize: 16,
-    color: '#333333',
-    fontWeight: '500',
-  },
-  closeButton: {
-    marginTop: 15,
-    padding: 12,
-    backgroundColor: '#6c757d',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   answer: {
     marginTop: 5,
@@ -542,7 +464,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#333',
   },
   change: {
     color: '#22c55e',
@@ -586,7 +508,7 @@ const styles = StyleSheet.create({
   },
   strategyDetail: {
     fontSize: 11,
-    color: '#333333',
+    color: '#444',
   },
   modalOverlay: {
     flex: 1,

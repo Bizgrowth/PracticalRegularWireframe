@@ -1,3 +1,4 @@
+
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useState } from 'react';
@@ -31,14 +32,68 @@ interface MarketAnalysis {
 }
 
 export default function NewsScreen() {
-  const colorScheme = useColorScheme();
-  const [news, setNews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [news] = useState<NewsItem[]>([
+    {
+      id: '1',
+      title: 'Bitcoin ETF Sees Record Inflows of $2.4B',
+      summary: 'Institutional demand for Bitcoin exposure through ETFs reaches new heights as pension funds and sovereign wealth funds increase allocations.',
+      url: 'https://example.com/bitcoin-etf-inflows',
+      date: '2024-01-15',
+      category: 'Institutional',
+      impact: 'High',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '2',
+      title: 'Ethereum Shanghai Upgrade Reduces Gas Fees by 40%',
+      summary: 'The latest Ethereum network upgrade significantly improves transaction efficiency and reduces costs for DeFi users.',
+      url: 'https://example.com/ethereum-upgrade',
+      date: '2024-01-14',
+      category: 'Technology',
+      impact: 'High',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '3',
+      title: 'Regulatory Clarity Emerges in European Union',
+      summary: 'New MiCA regulations provide clear framework for cryptocurrency operations across EU member states.',
+      url: 'https://example.com/eu-regulations',
+      date: '2024-01-13',
+      category: 'Regulation',
+      impact: 'Medium',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '4',
+      title: 'DeFi Total Value Locked Surpasses $100B Mark',
+      summary: 'Decentralized finance protocols continue expansion with innovative yield strategies and cross-chain integration.',
+      url: 'https://example.com/defi-tvl',
+      date: '2024-01-12',
+      category: 'DeFi',
+      impact: 'Medium',
+      sentiment: 'Bullish'
+    },
+    {
+      id: '5',
+      title: 'Major Bank Adopts Blockchain for Trade Finance',
+      summary: 'JPMorgan Chase implements blockchain technology for international trade settlements, reducing processing time by 75%.',
+      url: 'https://example.com/bank-blockchain',
+      date: '2024-01-11',
+      category: 'Adoption',
+      impact: 'Medium',
+      sentiment: 'Bullish'
+    },
+  ]);
 
-  const backgroundColor = useThemeColor({}, 'background');
-  const cardBackground = useThemeColor({}, 'cardBackground');
-  const textColor = useThemeColor({}, 'text');
-  const borderColor = useThemeColor({}, 'border');
+  const [marketAnalysis] = useState<MarketAnalysis>({
+    trend: 'Bullish',
+    confidence: 78,
+    keyLevels: {
+      support: 41500,
+      resistance: 46000
+    },
+    recommendation: 'Accumulate on dips with tight risk management. Strong institutional demand supports current levels.'
+  });
 
   const openURL = (url: string) => {
     Linking.openURL(url);
@@ -101,7 +156,7 @@ export default function NewsScreen() {
           <ThemedText style={styles.recommendation}>{marketAnalysis.recommendation}</ThemedText>
         </ThemedView>
       </ThemedView>
-
+      
       <ThemedView style={styles.section}>
         <ThemedText type="subtitle">📰 Latest Market News</ThemedText>
         {news.map((item) => (
@@ -144,7 +199,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Volatility: Price fluctuation range - higher volatility means higher risk/reward
         </ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Technical Analysis Basics
         </ThemedText>
@@ -166,7 +221,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Best for long-term wealth building
         </ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Swing Trading
         </ThemedText>
@@ -179,7 +234,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Requires active monitoring and risk management
         </ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Value Investing
         </ThemedText>
@@ -205,7 +260,7 @@ export default function NewsScreen() {
         <ThemedText>
           • Keep 20-30% in stablecoins for opportunities
         </ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Stop Loss Strategies
         </ThemedText>
@@ -213,7 +268,7 @@ export default function NewsScreen() {
         <ThemedText>• Use trailing stops to lock in profits</ThemedText>
         <ThemedText>• Mental stops for long-term positions</ThemedText>
         <ThemedText>• Never move stops against your position</ThemedText>
-
+        
         <ThemedText type="defaultSemiBold" style={styles.guideTitle}>
           Diversification Guidelines
         </ThemedText>
@@ -261,20 +316,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   analysisContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f5f5f5',
     padding: 15,
     borderRadius: 12,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
   trendCard: {
     backgroundColor: '#fff',
@@ -293,7 +338,7 @@ const styles = StyleSheet.create({
   },
   confidence: {
     fontSize: 14,
-    color: '#444444',
+    color: '#666',
     fontWeight: 'bold',
   },
   levelsContainer: {
@@ -306,7 +351,7 @@ const styles = StyleSheet.create({
   },
   levelLabel: {
     fontSize: 12,
-    color: '#444444',
+    color: '#666',
   },
   levelValue: {
     fontSize: 16,
@@ -315,7 +360,7 @@ const styles = StyleSheet.create({
   },
   recommendation: {
     fontSize: 12,
-    color: '#444444',
+    color: '#444',
     fontStyle: 'italic',
     textAlign: 'center',
   },
@@ -323,81 +368,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   newsItem: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
     padding: 15,
     borderRadius: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    color: '#2E86C1',
-  },
-  content: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#222222',
-  },
-  loading: {
-    fontSize: 14,
-    color: '#555555',
-    fontStyle: 'italic',
-  },
-  error: {
-    fontSize: 14,
-    color: '#e74c3c',
-    fontWeight: 'bold',
-  },
-  impactBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginLeft: 10,
-  },
-  impactText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  newsTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  newsContent: {
-    fontSize: 12,
-    color: '#444444',
-    marginBottom: 8,
-  },
-  newsSource: {
-    fontSize: 11,
-    color: '#666666',
-    fontStyle: 'italic',
-  },
-  newsItemContainer: {
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#d0d0d0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderColor: '#e0e0e0',
   },
   newsContent: {
     gap: 8,
@@ -429,7 +405,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   newsSummary: {
-    color: '#444444',
+    color: '#666',
     lineHeight: 18,
     fontSize: 14,
   },
@@ -450,29 +426,5 @@ const styles = StyleSheet.create({
   guideTitle: {
     marginTop: 15,
     marginBottom: 5,
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  newsCard: {
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
   },
 });
