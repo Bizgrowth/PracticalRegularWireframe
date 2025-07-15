@@ -1,10 +1,14 @@
-
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
+const apicache = require('apicache'); // Import apicache
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize cache
+let apiCache = apicache.middleware;
+const cache = apiCache('5 minutes'); // Cache for 5 minutes
 
 // Middleware
 app.use(express.json());
@@ -16,17 +20,17 @@ app.get('/', (req, res) => {
 });
 
 // AI Analysis API endpoint
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', cache, async (req, res) => {
   try {
     const { riskTolerance, investmentAmount, timeHorizon, experience } = req.body;
-    
+
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
-    
+
     if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
-    
+
     const openai = new OpenAI({
       apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     });
@@ -72,10 +76,18 @@ Focus on coins with strong 90-day momentum AND positive future catalysts. Tailor
 
     const analysis = completion.choices[0].message.content;
 
-    res.json({
+    const response = {
       success: true,
       analysis: analysis
-    });
+    };
+
+    // Cache the response
+    // apiCache.set(cacheKey, {
+    //   data: response,
+    //   timestamp: Date.now()
+    // });
+
+    res.json(response);
 
   } catch (error) {
     console.error('Investment Generation Error:', error);
@@ -87,15 +99,15 @@ Focus on coins with strong 90-day momentum AND positive future catalysts. Tailor
 });
 
 // Top 10 Cryptocurrencies endpoint
-app.get('/api/top10', async (req, res) => {
+app.get('/api/top10', cache, async (req, res) => {
   try {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
-    
+
     if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
-    
+
     const openai = new OpenAI({
       apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     });
@@ -161,10 +173,18 @@ Provide this analysis for all 10 cryptocurrencies with current market data and p
 
     const analysis = completion.choices[0].message.content;
 
-    res.json({
+    const response = {
       success: true,
       analysis: analysis
-    });
+    };
+
+    // Cache the response
+    // apiCache.set(cacheKey, {
+    //   data: response,
+    //   timestamp: Date.now()
+    // });
+
+    res.json(response);
 
   } catch (error) {
     console.error('Top 10 Cryptocurrencies Error:', error);

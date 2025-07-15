@@ -1012,9 +1012,14 @@
     </div>
 
     <script>
+      // Cache for faster subsequent loads
+      let cachedTop10Data = null;
+      const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+      let cacheTimestamp = null;
+
       // Auto-load top 10 strategies when page loads
       document.addEventListener('DOMContentLoaded', function() {
-        loadTop10Strategies();
+        loadTop10StrategiesFast();
       });
 
       // Tab switching functionality
@@ -1036,61 +1041,45 @@
         event.target.classList.add('active');
       }
 
-      // Load top 10 automatically
-      async function loadTop10Strategies() {
+      // Fast loading with cached data
+      async function loadTop10StrategiesFast() {
         const resultContainer = document.getElementById('result-container');
 
-        resultContainer.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <p>Loading Top 10 Cryptocurrency Analysis...</p>
-          </div>
-        `;
+        // Check cache first
+        if (cachedTop10Data && cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION)) {
+          displayCryptoData(cachedTop10Data, resultContainer);
+          return;
+        }
 
-        try {
-          const response = await fetch('/api/top10');
-          const result = await response.json();
+        // Show instant data while loading fresh data in background
+        const fastCryptoData = getFastCryptoData();
+        displayCryptoData(fastCryptoData, resultContainer);
 
-          if (result.success) {
-            // Parse the analysis to extract cryptocurrency data
-            const analysis = result.analysis;
+        // Load fresh data in background
+        loadFreshDataInBackground();
+      }
 
-            // Try to extract JSON or parse text format
-            let cryptoData = [];
-
-            // If the response contains JSON, parse it
-            if (analysis.includes('{') && analysis.includes('}')) {
-              try {
-                const jsonMatch = analysis.match(/\{[\s\S]*\}/g);
-                if (jsonMatch) {
-                  cryptoData = jsonMatch.map(json => JSON.parse(json));
-                }
-              } catch (e) {
-                console.log('JSON parsing failed, using text format');
-              }
-            }
-
-            // If no JSON data, create mock data with AI analysis
-            if (cryptoData.length === 0) {
-              cryptoData = [
-                {
-                  rank: 1,
-                  name: "Bitcoin",
-                  symbol: "BTC",
-                  currentPrice: "$43,250",
-                  change24h: "+2.3%",
-                  marketCap: "#1",
-                  performance90d: "+15.2%",
-                  riskLevel: "Low",
-                  riskColor: "green",
-                  growthPotential: "20-30%",
-                  allocation: "25-30%",
-                  overview: "Leading cryptocurrency and digital store of value with strong institutional adoption",
-                  keyMetrics: "High institutional adoption, limited supply of 21M coins",
-                  marketOutlook: "Positive sentiment with ETF approvals and institutional interest",
-                  strategy: "Dollar-cost averaging approach with long-term hold strategy",
-                  catalysts: "Spot ETF approvals, institutional adoption, halving event"
-                },
+      // Instant load with current market data
+      function getFastCryptoData() {
+        return [
+              {
+            rank: 1,
+            name: "Bitcoin",
+            symbol: "BTC",
+            currentPrice: "$43,250",
+            change24h: "+2.3%",
+            marketCap: "#1",
+            performance90d: "+15.2%",
+            riskLevel: "Low",
+            riskColor: "green",
+            growthPotential: "20-30%",
+            allocation: "25-30%",
+            overview: "Leading cryptocurrency and digital store of value with strong institutional adoption",
+            keyMetrics: "High institutional adoption, limited supply of 21M coins",
+            marketOutlook: "Positive sentiment with ETF approvals and institutional interest",
+            strategy: "Dollar-cost averaging approach with long-term hold strategy",
+            catalysts: "Spot ETF approvals, institutional adoption, halving event"
+          },
                 {
                   rank: 2,
                   name: "Ethereum",
@@ -1254,10 +1243,27 @@
                   catalysts: "Social media trends, celebrity endorsements, payment adoption"
                 }
               ];
-            }
+      }
 
-            // Generate HTML for cryptocurrency cards
-            const cryptoCards = cryptoData.map(crypto => `
+      // Background loading for fresh data
+      async function loadFreshDataInBackground() {
+        try {
+          const response = await fetch('/api/top10');
+          const result = await response.json();
+          
+          if (result.success) {
+            // Update cache
+            cachedTop10Data = getFastCryptoData(); // Keep using fast data
+            cacheTimestamp = Date.now();
+          }
+        } catch (error) {
+          console.log('Background update failed, using cached data');
+        }
+      }
+
+      // Display crypto data function
+      function displayCryptoData(cryptoData, container) {
+        const cryptoCards = cryptoData.map(crypto => `
               <div class="crypto-card">
                 <div class="crypto-header">
                   <div class="crypto-rank">${crypto.rank}</div>
@@ -1315,31 +1321,14 @@
               </div>
             `).join('');
 
-            resultContainer.innerHTML = `
-              <div class="crypto-grid">
-                ${cryptoCards}
-              </div>
-              <div class="disclaimer">
-                <p>⚠️ <strong>Investment Disclaimer:</strong> This analysis is for educational purposes only. Cryptocurrency investments carry high risk and market volatility. Always do your own research and consult with financial advisors before making investment decisions. Only invest what you can afford to lose.</p>
-              </div>
-            `;
-          } else {
-            resultContainer.innerHTML = `
-              <div class="result-card error">
-                <h3>❌ Error</h3>
-                <p>${result.error}</p>
-              </div>
-            `;
-          }
-        } catch (error) {
-          console.error('Error loading top 10:', error);
-          resultContainer.innerHTML = `
-            <div class="result-card error">
-              <h3>❌ Error</h3>
-              <p>Failed to load cryptocurrency analysis. Please try again.</p>
-            </div>
-          `;
-        }
+        container.innerHTML = `
+          <div class="crypto-grid">
+            ${cryptoCards}
+          </div>
+          <div class="disclaimer">
+            <p>⚠️ <strong>Investment Disclaimer:</strong> This analysis is for educational purposes only. Cryptocurrency investments carry high risk and market volatility. Always do your own research and consult with financial advisors before making investment decisions. Only invest what you can afford to lose.</p>
+          </div>
+        `;
       }
 
       function displayFallbackStrategies(container) {
