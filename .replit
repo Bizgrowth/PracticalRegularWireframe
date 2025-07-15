@@ -9,7 +9,7 @@ localPort = 8081
 externalPort = 80
 
 [workflows]
-runButton = "Crypto App Dev Server"
+runButton = "Web App Server"
 
 [[workflows.workflow]]
 name = "Dev Server"
@@ -60,5 +60,15 @@ mode = "sequential"
 task = "shell.exec"
 args = "EXPO_PACKAGER_PROXY_URL=https://$REPLIT_DEV_DOMAIN REACT_NATIVE_PACKAGER_HOSTNAME=$REPLIT_DEV_DOMAIN npx expo start --web"
 
+[[workflows.workflow]]
+name = "Web App Server"
+author = 42806198
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm start"
+
 [deployment]
 deploymentTarget = "cloudrun"
+run = ["sh", "-c", "npm start"]
