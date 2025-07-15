@@ -27,21 +27,28 @@ app.post('/api/analyze', async (req, res) => {
       apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     });
 
-    const prompt = `As a cryptocurrency investment expert, provide personalized investment advice based on:
-    
+    const prompt = `As a cryptocurrency investment expert, provide TOP 10 RANKED investment recommendations based on comprehensive analysis:
+
 Investment Profile:
 - Risk Tolerance: ${riskTolerance}
-- Investment Amount: $${investmentAmount}
+- Investment Amount: $${investmentAmount}  
 - Time Horizon: ${timeHorizon}
 - Experience Level: ${experience}
 
-Please provide:
-1. Recommended cryptocurrency allocation
-2. Specific coins to consider
-3. Risk management strategies
-4. Entry and exit strategies
+ANALYSIS REQUIREMENTS:
+📊 **90-Day Performance Analysis**: Include actual performance data trends
+🔮 **Future Outlook**: 3-6 month projections based on fundamentals
+📈 **Current Market Position**: Support/resistance levels and momentum
+⚖️ **Risk-Adjusted Rankings**: Score each investment 1-10
 
-Keep the response concise but comprehensive, around 200-300 words.`;
+FORMAT AS NUMBERED LIST (1-10):
+**[RANK]. [COIN] ([SYMBOL]) - $[CURRENT_PRICE]**
+📊 90-Day Performance: [+/- %]
+🎯 Investment Score: [X/10]
+💡 Why Now: [2-3 sentence analysis]
+📈 Target: $[price] | ⚠️ Risk: [Low/Med/High]
+
+Focus on coins with strong 90-day momentum AND positive future catalysts. Tailor rankings to the specified risk tolerance and investment amount.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
