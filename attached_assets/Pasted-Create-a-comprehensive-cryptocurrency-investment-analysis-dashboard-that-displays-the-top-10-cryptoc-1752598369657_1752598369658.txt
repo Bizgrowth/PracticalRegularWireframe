@@ -1,0 +1,78 @@
+Create a comprehensive cryptocurrency investment analysis dashboard that displays the top 10 cryptocurrency investment opportunities. For each cryptocurrency, provide:
+
+**Analysis Framework:**
+- 90-day performance analysis with key metrics
+- Current market outlook and positioning
+- Future growth potential (6-12 month horizon)
+- Moderate return investment strategy
+- Brief overview of the cryptocurrency's purpose and technology
+
+**Display Requirements:**
+- Each cryptocurrency should have its own distinct container/card
+- Clean, professional layout suitable for business presentations
+- Color-coded indicators for risk levels (green=low, yellow=moderate, red=high)
+- Visual elements like progress bars or charts where relevant
+
+**Top 10 Cryptocurrencies to Analyze:**
+1. Bitcoin (BTC)
+2. Ethereum (ETH)
+3. Binance Coin (BNB)
+4. Solana (SOL)
+5. XRP (XRP)
+6. Cardano (ADA)
+7. Dogecoin (DOGE)
+8. Avalanche (AVAX)
+9. Polygon (MATIC)
+10. Chainlink (LINK)
+
+**For Each Cryptocurrency Container Include:**
+
+**Header Section:**
+- Cryptocurrency name and symbol
+- Current price and 24h change percentage
+- Market cap ranking
+
+**90-Day Analysis:**
+- Performance percentage
+- Key price movements and trends
+- Volume analysis
+- Technical indicators summary
+
+**Current Outlook:**
+- Market sentiment assessment
+- Recent developments and news impact
+- Competitive position
+- Risk assessment (Low/Moderate/High)
+
+**Future Outlook (6-12 months):**
+- Growth potential percentage
+- Key catalysts and upcoming events
+- Market adoption trends
+- Regulatory considerations
+
+**Moderate Return Strategy:**
+- Recommended allocation percentage
+- Entry point suggestions
+- Risk management approach
+- Timeline for potential returns
+
+**Cryptocurrency Overview:**
+- What the cryptocurrency does
+- Use case and real-world applications
+- Technology highlights
+- Why it's considered a good investment
+
+**Styling Requirements:**
+- Professional business theme
+- Responsive design
+- Easy-to-read typography
+- Consistent color scheme
+- Mobile-friendly layout
+
+**Additional Features:**
+- Overall portfolio recommendation summary
+- Risk diversification tips
+- Market timing suggestions
+- Disclaimer about investment risks
+
+Please structure this as a complete web application with HTML, CSS, and JavaScript that can be directly implemented in Replit.
