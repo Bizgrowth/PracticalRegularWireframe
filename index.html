@@ -539,6 +539,143 @@
         font-size: 13px;
         color: #721c24;
       }
+
+      .individual-strategy-container {
+        background: #2c3e50;
+        border: 2px solid #34495e;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .individual-strategy-container:hover {
+        border-color: #3498db;
+        box-shadow: 0 6px 25px rgba(52,152,219,0.4);
+        transform: translateY(-3px);
+        background: #34495e;
+      }
+
+      .individual-strategy-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: var(--border-color);
+      }
+
+      .individual-strategy-container.risk-low::before { background: #27ae60; }
+      .individual-strategy-container.risk-medium::before { background: #f39c12; }
+      .individual-strategy-container.risk-high::before { background: #e67e22; }
+      .individual-strategy-container.risk-very-high::before { background: #e74c3c; }
+
+      .strategy-number-circle {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        flex-shrink: 0;
+        box-shadow: 0 3px 10px rgba(52,152,219,0.4);
+      }
+
+      .strategy-content-dark {
+        flex: 1;
+        color: #ecf0f1;
+      }
+
+      .strategy-title-dark {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ecf0f1;
+        margin: 0 0 14px 0;
+        line-height: 1.3;
+      }
+
+      .strategy-metrics-dark {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .metric-badge-dark {
+        background: #34495e;
+        border: 1px solid #4a6741;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #bdc3c7;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .metric-badge-dark.success {
+        background: #27ae60;
+        border-color: #2ecc71;
+        color: white;
+      }
+
+      .metric-badge-dark.risk {
+        background: #e67e22;
+        border-color: #f39c12;
+        color: white;
+      }
+
+      .strategy-description-dark {
+        color: #bdc3c7;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        font-size: 14px;
+        background: #34495e;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #3498db;
+      }
+
+      .strategy-description-dark strong {
+        color: #ecf0f1;
+      }
+
+      .strategy-footer-dark {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #34495e;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #4a6741;
+      }
+
+      .footer-metric-dark {
+        font-size: 12px;
+        color: #95a5a6;
+        text-align: center;
+        flex: 1;
+      }
+
+      .footer-metric-dark strong {
+        color: #ecf0f1;
+        font-weight: 600;
+        display: block;
+        margin-top: 2px;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
@@ -827,42 +964,52 @@
           }
         ];
 
-        let strategiesHTML = strategies.map(strategy => `
-          <div class="modern-strategy-container ${strategy.riskClass}">
-            <div class="strategy-number-badge">${strategy.number}.</div>
-            <div class="strategy-content">
-              <h3 class="strategy-title-modern">${strategy.title}</h3>
+        // Clear container and add each strategy in its own separate container
+        container.innerHTML = '';
+        
+        strategies.forEach(strategy => {
+          const strategyContainer = document.createElement('div');
+          strategyContainer.className = `individual-strategy-container ${strategy.riskClass}`;
+          
+          strategyContainer.innerHTML = `
+            <div class="strategy-number-circle">${strategy.number}</div>
+            <div class="strategy-content-dark">
+              <h3 class="strategy-title-dark">${strategy.title}</h3>
               
-              <div class="strategy-metrics-row">
-                <div class="metric-badge success">
+              <div class="strategy-metrics-dark">
+                <div class="metric-badge-dark success">
                   📊 Success Rate: ${strategy.successRate}
                 </div>
-                <div class="metric-badge risk">
+                <div class="metric-badge-dark risk">
                   🎯 Risk Level: ${strategy.riskLevel}
                 </div>
               </div>
               
-              <div class="strategy-description-modern">
+              <div class="strategy-description-dark">
                 💡 <strong>Strategy:</strong> ${strategy.strategy}
               </div>
               
-              <div class="strategy-footer-metrics">
-                <div class="footer-metric">
+              <div class="strategy-footer-dark">
+                <div class="footer-metric-dark">
                   📈 Expected Return: <strong>${strategy.expectedReturn}</strong>
                 </div>
-                <div class="footer-metric">
+                <div class="footer-metric-dark">
                   ⏰ Time: <strong>${strategy.timeframe}</strong>
                 </div>
               </div>
             </div>
-          </div>
-        `).join('');
+          `;
+          
+          container.appendChild(strategyContainer);
+        });
 
-        container.innerHTML = strategiesHTML + `
-          <div class="disclaimer-container">
-            <strong>⚠️ DISCLAIMER:</strong> These strategies are for educational purposes only. Cryptocurrency investments carry high risk. Always do your own research and never invest more than you can afford to lose.
-          </div>
+        // Add disclaimer as separate container
+        const disclaimerContainer = document.createElement('div');
+        disclaimerContainer.className = 'disclaimer-container';
+        disclaimerContainer.innerHTML = `
+          <strong>⚠️ DISCLAIMER:</strong> These strategies are for educational purposes only. Cryptocurrency investments carry high risk. Always do your own research and never invest more than you can afford to lose.
         `;
+        container.appendChild(disclaimerContainer);
       }
 
       // Customize button functionality
