@@ -409,6 +409,136 @@
       .risk-medium { border-left: 4px solid #ffc107; }
       .risk-high { border-left: 4px solid #fd7e14; }
       .risk-very-high { border-left: 4px solid #dc3545; }
+
+      .modern-strategy-container {
+        background: #ffffff;
+        border: 2px solid #e9ecef;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .modern-strategy-container:hover {
+        border-color: #007bff;
+        box-shadow: 0 6px 20px rgba(0,123,255,0.15);
+        transform: translateY(-3px);
+      }
+
+      .modern-strategy-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: var(--border-color);
+      }
+
+      .modern-strategy-container.risk-low::before { background: #28a745; }
+      .modern-strategy-container.risk-medium::before { background: #ffc107; }
+      .modern-strategy-container.risk-high::before { background: #fd7e14; }
+      .modern-strategy-container.risk-very-high::before { background: #dc3545; }
+
+      .strategy-number-badge {
+        display: inline-block;
+        font-size: 20px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .strategy-content {
+        padding-left: 0;
+      }
+
+      .strategy-title-modern {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 12px 0;
+        line-height: 1.3;
+      }
+
+      .strategy-metrics-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .metric-badge {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .metric-badge.success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+
+      .metric-badge.risk {
+        background: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+      }
+
+      .strategy-description-modern {
+        color: #495057;
+        line-height: 1.5;
+        margin-bottom: 14px;
+        font-size: 14px;
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #dee2e6;
+      }
+
+      .strategy-footer-metrics {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-top: 12px;
+      }
+
+      .footer-metric {
+        font-size: 12px;
+        color: #6c757d;
+        text-align: center;
+        flex: 1;
+      }
+
+      .footer-metric strong {
+        color: #333;
+        font-weight: 600;
+        display: block;
+        margin-top: 2px;
+      }
+
+      .disclaimer-container {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #721c24;
+      }
     </style>
   </head>
   <body>
@@ -597,141 +727,139 @@
         const strategies = [
           {
             number: 1,
-            title: "Bitcoin Dollar-Cost Averaging (DCA)",
-            successRate: "95%",
+            title: "Dollar-Cost Averaging (DCA) into Bitcoin",
+            successRate: "High",
             riskLevel: "Low",
-            strategy: "Invest fixed amount weekly/monthly regardless of price",
-            expectedReturn: "15-25% annually",
-            timeframe: "1-5 years",
+            strategy: "Regularly invest a fixed amount into Bitcoin regardless of price fluctuations",
+            expectedReturn: "20-50% annually",
+            timeframe: "Long-term",
             riskClass: "risk-low"
           },
           {
             number: 2,
             title: "Ethereum Staking Strategy",
-            successRate: "88%",
+            successRate: "High",
             riskLevel: "Medium", 
             strategy: "Stake ETH for 4-6% annual rewards plus price appreciation",
-            expectedReturn: "12-20% annually",
-            timeframe: "6 months - 3 years",
+            expectedReturn: "15-35% annually",
+            timeframe: "Medium-term",
             riskClass: "risk-medium"
           },
           {
             number: 3,
             title: "Diversified Large-Cap Portfolio",
-            successRate: "82%",
+            successRate: "High",
             riskLevel: "Medium",
-            strategy: "40% BTC, 30% ETH, 30% top 10 altcoins",
-            expectedReturn: "18-30% annually", 
-            timeframe: "1-3 years",
+            strategy: "40% BTC, 30% ETH, 30% top 10 altcoins for balanced exposure",
+            expectedReturn: "25-45% annually", 
+            timeframe: "Medium-term",
             riskClass: "risk-medium"
           },
           {
             number: 4,
             title: "DeFi Yield Farming",
-            successRate: "75%",
+            successRate: "Medium",
             riskLevel: "High",
-            strategy: "Provide liquidity to earn trading fees and rewards",
-            expectedReturn: "25-50% annually",
-            timeframe: "3-12 months",
+            strategy: "Provide liquidity to earn trading fees and rewards in DeFi protocols",
+            expectedReturn: "30-80% annually",
+            timeframe: "Short-term",
             riskClass: "risk-high"
           },
           {
             number: 5,
             title: "Layer 1 Blockchain Accumulation",
-            successRate: "78%",
-            riskLevel: "Medium-High",
-            strategy: "Focus on SOL, AVAX, ADA, DOT fundamentals",
-            expectedReturn: "20-40% annually",
-            timeframe: "6 months - 2 years",
+            successRate: "Medium",
+            riskLevel: "High",
+            strategy: "Focus on SOL, AVAX, ADA, DOT for next-gen blockchain adoption",
+            expectedReturn: "35-70% annually",
+            timeframe: "Medium-term",
             riskClass: "risk-high"
           },
           {
             number: 6,
             title: "AI & Gaming Token Strategy",
-            successRate: "65%",
+            successRate: "Medium",
             riskLevel: "High",
-            strategy: "Emerging sectors with high growth potential",
-            expectedReturn: "30-80% annually",
-            timeframe: "6-18 months",
+            strategy: "Emerging sectors with high growth potential and real-world utility",
+            expectedReturn: "40-120% annually",
+            timeframe: "Short-term",
             riskClass: "risk-high"
           },
           {
             number: 7,
             title: "Swing Trading Momentum",
-            successRate: "60%",
+            successRate: "Low",
             riskLevel: "Very High",
-            strategy: "Trade 2-4 week price cycles with technical analysis",
-            expectedReturn: "15-40% monthly",
-            timeframe: "2-30 days",
+            strategy: "Trade 2-4 week price cycles using technical analysis signals",
+            expectedReturn: "20-60% monthly",
+            timeframe: "Short-term",
             riskClass: "risk-very-high"
           },
           {
             number: 8,
             title: "Altcoin Season Rotation",
-            successRate: "70%",
+            successRate: "Medium",
             riskLevel: "High",
-            strategy: "Rotate between sectors based on market cycles",
-            expectedReturn: "25-60% annually",
-            timeframe: "3-12 months",
+            strategy: "Rotate between sectors based on market cycles and narratives",
+            expectedReturn: "30-90% annually",
+            timeframe: "Medium-term",
             riskClass: "risk-high"
           },
           {
             number: 9,
             title: "Meme Coin Speculation (5% Portfolio)",
-            successRate: "45%",
+            successRate: "Low",
             riskLevel: "Extreme",
-            strategy: "Small allocation to viral/trending meme coins",
-            expectedReturn: "100-1000% or -90%",
-            timeframe: "Days to weeks",
+            strategy: "Small allocation to viral/trending meme coins for lottery tickets",
+            expectedReturn: "500-2000% or -90%",
+            timeframe: "Short-term",
             riskClass: "risk-very-high"
           },
           {
             number: 10,
             title: "Institutional Following Strategy",
-            successRate: "85%",
-            riskLevel: "Low-Medium",
-            strategy: "Mirror institutional crypto purchases and ETF flows",
-            expectedReturn: "12-22% annually",
-            timeframe: "1-5 years",
+            successRate: "High",
+            riskLevel: "Low",
+            strategy: "Mirror institutional crypto purchases and ETF flows for stability",
+            expectedReturn: "18-35% annually",
+            timeframe: "Long-term",
             riskClass: "risk-low"
           }
         ];
 
         let strategiesHTML = strategies.map(strategy => `
-          <div class="strategy-item ${strategy.riskClass}">
-            <div class="strategy-header">
-              <div class="strategy-number">${strategy.number}</div>
-              <h4 class="strategy-title">${strategy.title}</h4>
-            </div>
-            
-            <div class="strategy-metrics">
-              <div class="metric-item">
-                📊 Success Rate:<strong> ${strategy.successRate}</strong>
+          <div class="modern-strategy-container ${strategy.riskClass}">
+            <div class="strategy-number-badge">${strategy.number}.</div>
+            <div class="strategy-content">
+              <h3 class="strategy-title-modern">${strategy.title}</h3>
+              
+              <div class="strategy-metrics-row">
+                <div class="metric-badge success">
+                  📊 Success Rate: ${strategy.successRate}
+                </div>
+                <div class="metric-badge risk">
+                  🎯 Risk Level: ${strategy.riskLevel}
+                </div>
               </div>
-              <div class="metric-item">
-                🎯 Risk Level:<strong> ${strategy.riskLevel}</strong>
+              
+              <div class="strategy-description-modern">
+                💡 <strong>Strategy:</strong> ${strategy.strategy}
               </div>
-            </div>
-            
-            <div class="strategy-description">
-              💡 <strong>Strategy:</strong> ${strategy.strategy}
-            </div>
-            
-            <div class="strategy-targets">
-              <div class="target-item">
-                <div class="target-label">📈 Expected Return</div>
-                <div class="target-value">${strategy.expectedReturn}</div>
-              </div>
-              <div class="target-item">
-                <div class="target-label">⏰ Time Frame</div>
-                <div class="target-value">${strategy.timeframe}</div>
+              
+              <div class="strategy-footer-metrics">
+                <div class="footer-metric">
+                  📈 Expected Return: <strong>${strategy.expectedReturn}</strong>
+                </div>
+                <div class="footer-metric">
+                  ⏰ Time: <strong>${strategy.timeframe}</strong>
+                </div>
               </div>
             </div>
           </div>
         `).join('');
 
         container.innerHTML = strategiesHTML + `
-          <div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 10px; padding: 15px; margin-top: 20px;">
+          <div class="disclaimer-container">
             <strong>⚠️ DISCLAIMER:</strong> These strategies are for educational purposes only. Cryptocurrency investments carry high risk. Always do your own research and never invest more than you can afford to lose.
           </div>
         `;
