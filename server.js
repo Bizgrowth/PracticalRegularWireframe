@@ -86,7 +86,7 @@ Focus on coins with strong 90-day momentum AND positive future catalysts. Tailor
   }
 });
 
-// Top 10 Strategies endpoint
+// Top 10 Cryptocurrencies endpoint
 app.get('/api/top10', async (req, res) => {
   try {
     // Import OpenAI dynamically
@@ -100,35 +100,63 @@ app.get('/api/top10', async (req, res) => {
       apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     });
 
-    const prompt = `As a cryptocurrency investment strategist, provide the TOP 10 BEST investment strategies for 2024 based on:
+    const prompt = `As a cryptocurrency investment analyst, provide detailed analysis for the TOP 10 cryptocurrency investment opportunities. For each cryptocurrency, provide comprehensive analysis formatted as JSON.
 
-1. **Market Analysis**: Current trends and institutional adoption
-2. **Risk Management**: Balanced approach for different risk tolerances  
-3. **Historical Performance**: Proven strategies with track records
-4. **Future Outlook**: Emerging opportunities and technologies
+**Target Cryptocurrencies:**
+1. Bitcoin (BTC)
+2. Ethereum (ETH)
+3. Binance Coin (BNB)
+4. Solana (SOL)
+5. XRP (XRP)
+6. Cardano (ADA)
+7. Dogecoin (DOGE)
+8. Avalanche (AVAX)
+9. Polygon (MATIC)
+10. Chainlink (LINK)
 
-FORMAT AS NUMBERED LIST (1-10):
-**[NUMBER]. [STRATEGY NAME]**
-📊 Success Rate: [X]% | 🎯 Risk Level: [Level]
-💡 Strategy: [Brief description of approach]
-📈 Expected Return: [Range] annually | ⏰ Time: [Duration]
+**Required Analysis Framework:**
+- 90-day performance analysis with key metrics
+- Current market outlook and positioning
+- Future growth potential (6-12 month horizon)
+- Moderate return investment strategy
+- Brief overview of the cryptocurrency's purpose and technology
 
-Include diverse strategies from conservative (Bitcoin DCA) to aggressive (DeFi, altcoins) covering different time horizons and risk levels.`;
+**Output Format (JSON structure for each crypto):**
+{
+  "rank": 1,
+  "name": "Bitcoin",
+  "symbol": "BTC",
+  "currentPrice": "$43,250",
+  "change24h": "+2.3%",
+  "marketCap": "#1",
+  "performance90d": "+15.2%",
+  "riskLevel": "Low",
+  "riskColor": "green",
+  "growthPotential": "20-30%",
+  "allocation": "25-30%",
+  "overview": "Leading cryptocurrency and digital store of value...",
+  "keyMetrics": "High institutional adoption, limited supply of 21M coins",
+  "marketOutlook": "Positive sentiment with ETF approvals and institutional interest",
+  "strategy": "Dollar-cost averaging approach with long-term hold strategy",
+  "catalysts": "Spot ETF approvals, institutional adoption, halving event"
+}
+
+Provide this analysis for all 10 cryptocurrencies with current market data and professional investment insights.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: "You are a professional cryptocurrency strategist with expertise in various investment approaches, risk management, and market analysis."
+          content: "You are a professional cryptocurrency investment analyst specializing in comprehensive market analysis and investment recommendations."
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      max_tokens: 1500,
-      temperature: 0.5,
+      max_tokens: 2000,
+      temperature: 0.3,
     });
 
     const analysis = completion.choices[0].message.content;
@@ -139,10 +167,10 @@ Include diverse strategies from conservative (Bitcoin DCA) to aggressive (DeFi, 
     });
 
   } catch (error) {
-    console.error('Top 10 Strategies Error:', error);
+    console.error('Top 10 Cryptocurrencies Error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to generate top 10 strategies'
+      error: 'Failed to generate top 10 cryptocurrency analysis'
     });
   }
 });
