@@ -1,9 +1,5 @@
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
+import { openai } from '@ai-sdk/openai';
+import { generateText } from 'ai';
 
 export async function analyzeWithAI(query: string): Promise<string> {
   try {
@@ -11,31 +7,23 @@ export async function analyzeWithAI(query: string): Promise<string> {
       throw new Error('OpenAI API key not configured');
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a crypto and Bitcoin investment expert. Provide detailed, accurate information about:
-          - Bitcoin and cryptocurrency fundamentals
-          - Investment strategies and risk management
-          - Market analysis and trends
-          - Trading techniques
-          - Portfolio diversification
-          - Regulatory considerations
+    const { text } = await generateText({
+      model: openai('gpt-4'),
+      system: `You are a crypto and Bitcoin investment expert. Provide detailed, accurate information about:
+      - Bitcoin and cryptocurrency fundamentals
+      - Investment strategies and risk management
+      - Market analysis and trends
+      - Trading techniques
+      - Portfolio diversification
+      - Regulatory considerations
 
-          Always provide balanced, educational content and remind users that all investments carry risk.`
-        },
-        {
-          role: 'user',
-          content: query
-        }
-      ],
-      max_tokens: 500,
-      temperature: 0.7
+      Always provide balanced, educational content and remind users that all investments carry risk.`,
+      prompt: query,
+      maxTokens: 500,
+      temperature: 0.7,
     });
 
-    return response.choices[0]?.message?.content || 'No response generated';
+    return text || 'No response generated';
   } catch (error) {
     console.error('AI Analysis Error:', error);
     throw new Error('Failed to analyze with AI: ' + (error as Error).message);
@@ -122,59 +110,51 @@ Provide 10 recommendations in this format.`;
 
 export async function generateStrategyBasedRecommendations(strategyId: string, strategyName: string, riskLevel: string, timeHorizon: string, weights: any): Promise<string> {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an elite cryptocurrency investment strategist specializing in tailored investment approaches. Your expertise includes:
+    const { text } = await generateText({
+      model: openai('gpt-4'),
+      system: `You are an elite cryptocurrency investment strategist specializing in tailored investment approaches. Your expertise includes:
 
-          STRATEGY-SPECIFIC ANALYSIS:
-          🔹 Technical Analysis Weighting: ${weights.technical * 100}%
-          🔹 Fundamental Analysis Weighting: ${weights.fundamental * 100}%
-          🔹 Momentum Analysis Weighting: ${weights.momentum * 100}%
-          🔹 Volatility Assessment Weighting: ${weights.volatility * 100}%
-          🔹 Market Cap Consideration: ${weights.marketCap * 100}%
+      STRATEGY-SPECIFIC ANALYSIS:
+      🔹 Technical Analysis Weighting: ${weights.technical * 100}%
+      🔹 Fundamental Analysis Weighting: ${weights.fundamental * 100}%
+      🔹 Momentum Analysis Weighting: ${weights.momentum * 100}%
+      🔹 Volatility Assessment Weighting: ${weights.volatility * 100}%
+      🔹 Market Cap Consideration: ${weights.marketCap * 100}%
 
-          STRATEGY PARAMETERS:
-          📊 Strategy: ${strategyName}
-          ⚖️ Risk Level: ${riskLevel}
-          ⏰ Time Horizon: ${timeHorizon}
+      STRATEGY PARAMETERS:
+      📊 Strategy: ${strategyName}
+      ⚖️ Risk Level: ${riskLevel}
+      ⏰ Time Horizon: ${timeHorizon}
 
-          ANALYSIS FOCUS AREAS:
-          - 90-day performance trends and momentum indicators
-          - Risk-adjusted returns for the specified time horizon
-          - Strategy-specific entry and exit points
-          - Volatility patterns matching risk tolerance
-          - Market cap considerations for strategy alignment
-          - Regulatory compliance and security assessments
+      ANALYSIS FOCUS AREAS:
+      - 90-day performance trends and momentum indicators
+      - Risk-adjusted returns for the specified time horizon
+      - Strategy-specific entry and exit points
+      - Volatility patterns matching risk tolerance
+      - Market cap considerations for strategy alignment
+      - Regulatory compliance and security assessments
 
-          OUTPUT FORMAT:
-          **🎯 ${strategyName.toUpperCase()} STRATEGY - TOP 10 RECOMMENDATIONS**
-          **📅 Date: ${new Date().toDateString()}**
-          **⚖️ Risk Level: ${riskLevel} | ⏰ Time Horizon: ${timeHorizon}**
+      OUTPUT FORMAT:
+      **🎯 ${strategyName.toUpperCase()} STRATEGY - TOP 10 RECOMMENDATIONS**
+      **📅 Date: ${new Date().toDateString()}**
+      **⚖️ Risk Level: ${riskLevel} | ⏰ Time Horizon: ${timeHorizon}**
 
-          **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
-          📈 **Strategy Fit:** [Why this coin fits the strategy]
-          🎯 **Entry Target:** $[Price] | 📊 **Exit Target:** $[Price]
-          💡 **Key Catalyst:** [Upcoming event/development]
-          📊 **90-Day Performance:** [+/- percentage]
-          ⚖️ **Risk Assessment:** [Strategy-specific risk analysis]
+      **[RANK]. [COIN NAME] ([SYMBOL]) - $[PRICE]**
+      📈 **Strategy Fit:** [Why this coin fits the strategy]
+      🎯 **Entry Target:** $[Price] | 📊 **Exit Target:** $[Price]
+      💡 **Key Catalyst:** [Upcoming event/development]
+      📊 **90-Day Performance:** [+/- percentage]
+      ⚖️ **Risk Assessment:** [Strategy-specific risk analysis]
 
-          Always conclude with: "⚠️ DISCLAIMER: This analysis is tailored to your selected ${strategyName} strategy. Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
+      Always conclude with: "⚠️ DISCLAIMER: This analysis is tailored to your selected ${strategyName} strategy. Cryptocurrency investments carry high risk. Only invest what you can afford to lose. This is not financial advice."
 
-          Prioritize coins that align with the strategy's risk profile and time horizon.`
-        },
-        {
-          role: 'user',
-          content: `Generate expertly curated top 10 cryptocurrency investment recommendations specifically tailored for the ${strategyName} strategy. Focus on assets that align with the ${riskLevel} risk level and ${timeHorizon} time horizon. Consider the strategy's unique weighting preferences and provide actionable entry/exit targets.`
-        }
-      ],
-      max_tokens: 2000,
-      temperature: 0.3
+      Prioritize coins that align with the strategy's risk profile and time horizon.`,
+      prompt: `Generate expertly curated top 10 cryptocurrency investment recommendations specifically tailored for the ${strategyName} strategy. Focus on assets that align with the ${riskLevel} risk level and ${timeHorizon} time horizon. Consider the strategy's unique weighting preferences and provide actionable entry/exit targets.`,
+      maxTokens: 2000,
+      temperature: 0.3,
     });
 
-    return response.choices[0]?.message?.content || 'No recommendations generated';
+    return text || 'No recommendations generated';
   } catch (error) {
     console.error('Strategy Analysis Error:', error);
     throw new Error('Failed to generate strategy-based recommendations');
@@ -183,29 +163,21 @@ export async function generateStrategyBasedRecommendations(strategyId: string, s
 
 export async function analyzeInvestmentStrategy(strategy: string): Promise<string> {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a crypto investment strategist. Analyze and provide detailed insights on investment strategies including:
-          - Strategy explanation and methodology
-          - Risk assessment and mitigation
-          - Market conditions where strategy works best
-          - Expected returns and timeframes
-          - Practical implementation steps
-          - Common mistakes to avoid`
-        },
-        {
-          role: 'user',
-          content: `Analyze this investment strategy: ${strategy}`
-        }
-      ],
-      max_tokens: 700,
-      temperature: 0.5
+    const { text } = await generateText({
+      model: openai('gpt-4'),
+      system: `You are a crypto investment strategist. Analyze and provide detailed insights on investment strategies including:
+      - Strategy explanation and methodology
+      - Risk assessment and mitigation
+      - Market conditions where strategy works best
+      - Expected returns and timeframes
+      - Practical implementation steps
+      - Common mistakes to avoid`,
+      prompt: `Analyze this investment strategy: ${strategy}`,
+      maxTokens: 700,
+      temperature: 0.5,
     });
 
-    return response.choices[0]?.message?.content || 'No analysis generated';
+    return text || 'No analysis generated';
   } catch (error) {
     console.error('Strategy Analysis Error:', error);
     throw new Error('Failed to analyze investment strategy');
@@ -214,35 +186,27 @@ export async function analyzeInvestmentStrategy(strategy: string): Promise<strin
 
 export async function analyzeMarketTrends(): Promise<string> {
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a cryptocurrency market analyst specializing in trend analysis and market sentiment. Provide comprehensive market analysis covering:
+    const { text } = await generateText({
+      model: openai('gpt-4'),
+      system: `You are a cryptocurrency market analyst specializing in trend analysis and market sentiment. Provide comprehensive market analysis covering:
 
-          📊 MARKET ANALYSIS FRAMEWORK:
-          - Overall crypto market sentiment and direction
-          - Bitcoin dominance and altcoin season indicators
-          - Institutional adoption trends and regulatory developments
-          - Major resistance and support levels across key cryptocurrencies
-          - Sector rotation patterns (DeFi, Layer 1s, Gaming, AI tokens, etc.)
-          - Macroeconomic factors affecting crypto markets
-          - Fear & Greed Index interpretation
-          - Volume analysis and liquidity conditions
+      📊 MARKET ANALYSIS FRAMEWORK:
+      - Overall crypto market sentiment and direction
+      - Bitcoin dominance and altcoin season indicators
+      - Institutional adoption trends and regulatory developments
+      - Major resistance and support levels across key cryptocurrencies
+      - Sector rotation patterns (DeFi, Layer 1s, Gaming, AI tokens, etc.)
+      - Macroeconomic factors affecting crypto markets
+      - Fear & Greed Index interpretation
+      - Volume analysis and liquidity conditions
 
-          Format your analysis with clear sections and actionable insights for investors.`
-        },
-        {
-          role: 'user',
-          content: `Provide a comprehensive cryptocurrency market analysis for ${new Date().toDateString()}. Include current market sentiment, key trends, and what investors should watch for in the coming weeks.`
-        }
-      ],
-      max_tokens: 1000,
-      temperature: 0.4
+      Format your analysis with clear sections and actionable insights for investors.`,
+      prompt: `Provide a comprehensive cryptocurrency market analysis for ${new Date().toDateString()}. Include current market sentiment, key trends, and what investors should watch for in the coming weeks.`,
+      maxTokens: 1000,
+      temperature: 0.4,
     });
 
-    return response.choices[0]?.message?.content || 'No market analysis generated';
+    return text || 'No market analysis generated';
   } catch (error) {
     console.error('Market Analysis Error:', error);
     throw new Error('Failed to analyze market trends');
