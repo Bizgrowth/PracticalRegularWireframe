@@ -86,6 +86,67 @@ Focus on coins with strong 90-day momentum AND positive future catalysts. Tailor
   }
 });
 
+// Top 10 Strategies endpoint
+app.get('/api/top10', async (req, res) => {
+  try {
+    // Import OpenAI dynamically
+    const { OpenAI } = await import('openai');
+    
+    if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not configured');
+    }
+    
+    const openai = new OpenAI({
+      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+    });
+
+    const prompt = `As a cryptocurrency investment strategist, provide the TOP 10 BEST investment strategies for 2024 based on:
+
+1. **Market Analysis**: Current trends and institutional adoption
+2. **Risk Management**: Balanced approach for different risk tolerances  
+3. **Historical Performance**: Proven strategies with track records
+4. **Future Outlook**: Emerging opportunities and technologies
+
+FORMAT AS NUMBERED LIST (1-10):
+**[NUMBER]. [STRATEGY NAME]**
+📊 Success Rate: [X]% | 🎯 Risk Level: [Level]
+💡 Strategy: [Brief description of approach]
+📈 Expected Return: [Range] annually | ⏰ Time: [Duration]
+
+Include diverse strategies from conservative (Bitcoin DCA) to aggressive (DeFi, altcoins) covering different time horizons and risk levels.`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "You are a professional cryptocurrency strategist with expertise in various investment approaches, risk management, and market analysis."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 1500,
+      temperature: 0.5,
+    });
+
+    const analysis = completion.choices[0].message.content;
+
+    res.json({
+      success: true,
+      analysis: analysis
+    });
+
+  } catch (error) {
+    console.error('Top 10 Strategies Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate top 10 strategies'
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
