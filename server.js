@@ -197,7 +197,13 @@ Provide this analysis for all 10 cryptocurrencies with current market data and p
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    supabase: {
+      configured: !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
+    }
+  });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
