@@ -23,6 +23,10 @@ app.post('/api/analyze', async (req, res) => {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
     
+    if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not configured');
+    }
+    
     const openai = new OpenAI({
       apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
     });
