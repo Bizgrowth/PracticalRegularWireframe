@@ -199,6 +199,113 @@
         border: 1px solid #f5c6cb;
         margin-top: 15px;
       }
+
+      .top10-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 2px solid #e9ecef;
+      }
+
+      .top10-container h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .customize-section {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .customize-button {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
+
+      .customize-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+      }
+
+      .customization-form {
+        background: #ffffff;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 15px;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      .customization-form h4 {
+        margin: 0 0 20px 0;
+        color: #333;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .form-actions button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      #apply-customization {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+      }
+
+      #cancel-customization {
+        background: #6c757d;
+        color: white;
+      }
+
+      .form-actions button:hover {
+        transform: translateY(-1px);
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        border-left: 4px solid #28a745;
+      }
+
+      .analysis-content {
+        line-height: 1.6;
+        color: #333;
+      }
     </style>
   </head>
   <body>
@@ -217,7 +324,23 @@
       <div class="content">
         <!-- AI Expert Tab -->
         <div id="ai-tab" class="tab-content">
-          <form id="investment-form">
+          <!-- Top 10 Container at the top -->
+          <div class="top10-container">
+            <h3>🎯 Top 10 AI Investment Strategies</h3>
+            <div id="result-container"></div>
+          </div>
+
+          <!-- Customize Button -->
+          <div class="customize-section">
+            <button type="button" id="customize-btn" class="customize-button">
+              ⚙️ Customize Investment Risks
+            </button>
+          </div>
+
+          <!-- Hidden Customization Form -->
+          <div id="customization-form" class="customization-form" style="display: none;">
+            <h4>📊 Customize Your Investment Profile</h4>
+            
             <div class="form-group">
               <label for="risk-tolerance">Risk Tolerance</label>
               <select id="risk-tolerance" required>
@@ -253,10 +376,11 @@
               </select>
             </div>
 
-            <button type="submit" id="analyze-btn">🚀 Get Top 10 AI Rankings</button>
-          </form>
-
-          <div id="result-container"></div>
+            <div class="form-actions">
+              <button type="button" id="apply-customization">🚀 Apply Custom Settings</button>
+              <button type="button" id="cancel-customization">❌ Cancel</button>
+            </div>
+          </div>
         </div>
 
         <!-- Portfolio Tab -->
@@ -429,112 +553,127 @@
         `;
       }
 
-      // AI Analysis functionality
-      document.getElementById('investment-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const button = document.getElementById('analyze-btn');
-        const resultContainer = document.getElementById('result-container');
-		const form = document.getElementById('investment-form');
-
-
-        // Get form data
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData);
-
-        const response = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          resultContainer.innerHTML = `
-            <div class="result-card">
-              <h3>🎯 Top 10 AI Investment Rankings</h3>
-              <div class="analysis-content">
-                ${result.analysis.replace(/\n/g, '<br>')}
-              </div>
-            </div>
-          `;
+      // Customize button functionality
+      document.getElementById('customize-btn').addEventListener('click', function() {
+        const form = document.getElementById('customization-form');
+        if (form.style.display === 'none') {
+          form.style.display = 'block';
         } else {
-          // Fallback with sample top 10 rankings if API fails
-          resultContainer.innerHTML = `
-            <div class="result-card">
-              <h3>🎯 Top 10 AI Investment Rankings</h3>
-              <div class="analysis-content">
-                <strong>📊 Top 10 Crypto Investment Recommendations:</strong><br><br>
-
-                <strong>1. Bitcoin (BTC) - $43,250</strong><br>
-                📊 90-Day Performance: +12.5%<br>
-                🎯 Investment Score: 9/10<br>
-                💡 Why Now: Strong institutional adoption with ETF approvals driving demand<br>
-                📈 Target: $50,000 | ⚠️ Risk: Low<br><br>
-
-                <strong>2. Ethereum (ETH) - $2,650</strong><br>
-                📊 90-Day Performance: +18.2%<br>
-                🎯 Investment Score: 9/10<br>
-                💡 Why Now: Staking rewards and growing DeFi ecosystem<br>
-                📈 Target: $3,200 | ⚠️ Risk: Medium<br><br>
-
-                <strong>3. Solana (SOL) - $98.50</strong><br>
-                📊 90-Day Performance: +25.8%<br>
-                🎯 Investment Score: 8/10<br>
-                💡 Why Now: High-performance blockchain with growing ecosystem<br>
-                📈 Target: $120 | ⚠️ Risk: Medium<br><br>
-
-                <strong>4. Avalanche (AVAX) - $36.75</strong><br>
-                📊 90-Day Performance: +22.1%<br>
-                🎯 Investment Score: 8/10<br>
-                💡 Why Now: Fast consensus mechanism and subnet technology<br>
-                📈 Target: $45 | ⚠️ Risk: Medium<br><br>
-
-                <strong>5. Chainlink (LINK) - $14.60</strong><br>
-                📊 90-Day Performance: +15.9%<br>
-                🎯 Investment Score: 7/10<br>
-                💡 Why Now: Leading oracle network with real-world integrations<br>
-                📈 Target: $18 | ⚠️ Risk: Medium<br><br>
-
-                <strong>6. Polygon (MATIC) - $0.85</strong><br>
-                📊 90-Day Performance: +19.5%<br>
-                🎯 Investment Score: 7/10<br>
-                💡 Why Now: Layer 2 scaling solution with major partnerships<br>
-                📈 Target: $1.20 | ⚠️ Risk: Medium<br><br>
-
-                <strong>7. Cardano (ADA) - $0.48</strong><br>
-                📊 90-Day Performance: +8.2%<br>
-                🎯 Investment Score: 6/10<br>
-                💡 Why Now: Sustainable blockchain with academic approach<br>
-                📈 Target: $0.65 | ⚠️ Risk: Medium<br><br>
-
-                <strong>8. Polkadot (DOT) - $7.20</strong><br>
-                📊 90-Day Performance: +11.8%<br>
-                🎯 Investment Score: 6/10<br>
-                💡 Why Now: Interoperability solution for multi-chain future<br>
-                📈 Target: $9.50 | ⚠️ Risk: Medium<br><br>
-
-                <strong>9. Cosmos (ATOM) - $10.20</strong><br>
-                📊 90-Day Performance: +14.1%<br>
-                🎯 Investment Score: 6/10<br>
-                💡 Why Now: Internet of blockchains with strong staking rewards<br>
-                📈 Target: $13 | ⚠️ Risk: Medium<br><br>
-
-                <strong>10. NEAR Protocol (NEAR) - $3.45</strong><br>
-                📊 90-Day Performance: +16.7%<br>
-                🎯 Investment Score: 6/10<br>
-                💡 Why Now: User-friendly blockchain with sharding technology<br>
-                📈 Target: $4.50 | ⚠️ Risk: High<br><br>
-
-                <strong>⚠️ DISCLAIMER:</strong> This analysis is for educational purposes only. Cryptocurrency investments carry high risk. Always do your own research and never invest more than you can afford to lose.
-              </div>
-            </div>
-          `;
+          form.style.display = 'none';
         }
       });
+
+      // Cancel customization
+      document.getElementById('cancel-customization').addEventListener('click', function() {
+        document.getElementById('customization-form').style.display = 'none';
+      });
+
+      // Apply customization
+      document.getElementById('apply-customization').addEventListener('click', async function() {
+        const riskTolerance = document.getElementById('risk-tolerance').value;
+        const investmentAmount = document.getElementById('investment-amount').value;
+        const timeHorizon = document.getElementById('time-horizon').value;
+        const experience = document.getElementById('experience').value;
+
+        if (!riskTolerance || !investmentAmount || !timeHorizon || !experience) {
+          alert('Please fill in all fields before applying customization.');
+          return;
+        }
+
+        const resultContainer = document.getElementById('result-container');
+        
+        // Show loading state
+        resultContainer.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Generating Customized Top 10 Rankings...</p>
+          </div>
+        `;
+
+        try {
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              riskTolerance,
+              investmentAmount,
+              timeHorizon,
+              experience
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            resultContainer.innerHTML = `
+              <div class="result-card">
+                <div class="analysis-content">
+                  ${result.analysis.replace(/\n/g, '<br>')}
+                </div>
+              </div>
+            `;
+          } else {
+            displayCustomizedFallback(resultContainer, riskTolerance);
+          }
+
+          // Hide the form after applying
+          document.getElementById('customization-form').style.display = 'none';
+
+        } catch (error) {
+          console.error('Failed to get customized rankings:', error);
+          displayCustomizedFallback(resultContainer, riskTolerance);
+          document.getElementById('customization-form').style.display = 'none';
+        }
+      });
+
+      function displayCustomizedFallback(container, riskTolerance) {
+        const isAggressive = riskTolerance === 'aggressive';
+        const isConservative = riskTolerance === 'conservative';
+        
+        container.innerHTML = `
+          <div class="result-card">
+            <div class="analysis-content">
+              <strong>📊 Top 10 ${riskTolerance.charAt(0).toUpperCase() + riskTolerance.slice(1)} Investment Rankings:</strong><br><br>
+
+              <strong>1. ${isConservative ? 'Bitcoin (BTC) - $43,250' : isAggressive ? 'Solana (SOL) - $98.50' : 'Bitcoin (BTC) - $43,250'}</strong><br>
+              📊 90-Day Performance: ${isConservative ? '+12.5%' : isAggressive ? '+25.8%' : '+12.5%'}<br>
+              🎯 Investment Score: ${isConservative ? '9/10' : isAggressive ? '8/10' : '9/10'}<br>
+              💡 Why Now: ${isConservative ? 'Stable store of value with institutional backing' : isAggressive ? 'High-performance blockchain with explosive growth potential' : 'Strong institutional adoption with ETF approvals'}<br>
+              📈 Target: ${isConservative ? '$50,000' : isAggressive ? '$150' : '$50,000'} | ⚠️ Risk: ${isConservative ? 'Low' : isAggressive ? 'High' : 'Medium'}<br><br>
+
+              <strong>2. ${isConservative ? 'Ethereum (ETH) - $2,650' : isAggressive ? 'Avalanche (AVAX) - $36.75' : 'Ethereum (ETH) - $2,650'}</strong><br>
+              📊 90-Day Performance: ${isConservative ? '+18.2%' : isAggressive ? '+22.1%' : '+18.2%'}<br>
+              🎯 Investment Score: ${isConservative ? '8/10' : isAggressive ? '8/10' : '9/10'}<br>
+              💡 Why Now: ${isConservative ? 'Established smart contract platform' : isAggressive ? 'Fast consensus with subnet innovation' : 'Leading DeFi ecosystem'}<br>
+              📈 Target: ${isConservative ? '$3,000' : isAggressive ? '$60' : '$3,200'} | ⚠️ Risk: ${isConservative ? 'Medium' : isAggressive ? 'High' : 'Medium'}<br><br>
+
+              <strong>3. ${isConservative ? 'Cardano (ADA) - $0.48' : isAggressive ? 'Polygon (MATIC) - $0.85' : 'Solana (SOL) - $98.50'}</strong><br>
+              📊 90-Day Performance: ${isConservative ? '+8.2%' : isAggressive ? '+19.5%' : '+25.8%'}<br>
+              🎯 Investment Score: ${isConservative ? '7/10' : isAggressive ? '7/10' : '8/10'}<br>
+              💡 Why Now: ${isConservative ? 'Academic approach to blockchain' : isAggressive ? 'Layer 2 scaling with major partnerships' : 'High-performance blockchain'}<br>
+              📈 Target: ${isConservative ? '$0.60' : isAggressive ? '$1.50' : '$120'} | ⚠️ Risk: ${isConservative ? 'Medium' : isAggressive ? 'High' : 'Medium'}<br><br>
+
+              <strong>4. ${isConservative ? 'Chainlink (LINK) - $14.60' : isAggressive ? 'Chainlink (LINK) - $14.60' : 'Avalanche (AVAX) - $36.75'}</strong><br>
+              📊 90-Day Performance: +15.9%<br>
+              🎯 Investment Score: 7/10<br>
+              💡 Why Now: Leading oracle network with real-world integrations<br>
+              📈 Target: $18 | ⚠️ Risk: Medium<br><br>
+
+              <strong>5. ${isConservative ? 'Polkadot (DOT) - $7.20' : isAggressive ? 'NEAR Protocol (NEAR) - $3.45' : 'Chainlink (LINK) - $14.60'}</strong><br>
+              📊 90-Day Performance: ${isConservative ? '+11.8%' : isAggressive ? '+16.7%' : '+15.9%'}<br>
+              🎯 Investment Score: ${isConservative ? '6/10' : isAggressive ? '6/10' : '7/10'}<br>
+              💡 Why Now: ${isConservative ? 'Interoperability solution' : isAggressive ? 'User-friendly with high growth potential' : 'Oracle network leader'}<br>
+              📈 Target: ${isConservative ? '$9.50' : isAggressive ? '$6.00' : '$18'} | ⚠️ Risk: ${isConservative ? 'Medium' : isAggressive ? 'High' : 'Medium'}<br><br>
+
+              <strong>6-10. Additional rankings based on ${riskTolerance} strategy...</strong><br><br>
+
+              <strong>⚠️ DISCLAIMER:</strong> This analysis is customized for your ${riskTolerance} risk profile. Cryptocurrency investments carry high risk. Always do your own research and never invest more than you can afford to lose.
+            </div>
+          </div>
+        `;
+      }
     </script>
   </body>
 </html>
