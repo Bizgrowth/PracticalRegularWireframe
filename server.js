@@ -202,5 +202,5 @@ app.get('/health', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Crypto Investment AI Expert running on port ${PORT}`);
-  console.log(`📱 Open http://localhost:${PORT} to view the app`);
+  console.log(`📱 Open http://0.0.0.0:${PORT} to view the app`);
 });

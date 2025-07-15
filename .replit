@@ -73,6 +73,9 @@ mode = "sequential"
 task = "shell.exec"
 args = "node server.js"
 
+[env]
+REPLIT_KEEP_PACKAGE_DEV_DEPENDENCIES = "1"
+
 [deployment]
 deploymentTarget = "cloudrun"
 run = ["sh", "-c", "npm start"]
