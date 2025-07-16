@@ -1,4 +1,21 @@
 
+-- Drop existing policies if they exist to avoid conflicts
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can view own portfolios" ON portfolios;
+DROP POLICY IF EXISTS "Users can create own portfolios" ON portfolios;
+DROP POLICY IF EXISTS "Users can update own portfolios" ON portfolios;
+DROP POLICY IF EXISTS "Users can delete own portfolios" ON portfolios;
+DROP POLICY IF EXISTS "Users can view own investments" ON investments;
+DROP POLICY IF EXISTS "Users can create own investments" ON investments;
+DROP POLICY IF EXISTS "Users can update own investments" ON investments;
+DROP POLICY IF EXISTS "Users can delete own investments" ON investments;
+
+-- Drop existing trigger and function if they exist
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS handle_new_user();
+
 -- Create profiles table (extends auth.users)
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -35,11 +52,12 @@ CREATE TABLE IF NOT EXISTS investments (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create RLS policies
+-- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE portfolios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE investments ENABLE ROW LEVEL SECURITY;
 
+-- Create RLS policies
 -- Profiles policies
 CREATE POLICY "Users can view own profile" ON profiles
   FOR SELECT USING (auth.uid() = id);
