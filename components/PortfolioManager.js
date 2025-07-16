@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { portfolioClient, isSupabaseConfigured } from '../lib/supabase';
 
-export default function PortfolioManager({ user }) {
+export default function PortfolioManager({ user = { id: 'mock-user-1' } }) {
   const [portfolios, setPortfolios] = useState([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddInvestment, setShowAddInvestment] = useState(false);
+  const [error, setError] = useState('');
 
   const [newInvestment, setNewInvestment] = useState({
     cryptocurrency_symbol: '',
@@ -29,19 +30,27 @@ export default function PortfolioManager({ user }) {
 
   const fetchPortfolios = async () => {
     try {
-      const { data, error } = await supabase
-        .from('portfolios')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
+      setError('');
+      const { data, error } = await portfolioClient.getPortfolios(user.id);
+      
       if (error) throw error;
-      setPortfolios(data);
-      if (data.length > 0) {
+      
+      setPortfolios(data || []);
+      if (data && data.length > 0) {
         setSelectedPortfolio(data[0]);
       }
     } catch (error) {
       console.error('Error fetching portfolios:', error);
+      setError('Failed to load portfolios. Using demo mode.');
+      // Create a default portfolio for demo
+      const defaultPortfolio = {
+        id: 'demo-portfolio',
+        user_id: user.id,
+        name: 'Demo Portfolio',
+        created_at: new Date().toISOString()
+      };
+      setPortfolios([defaultPortfolio]);
+      setSelectedPortfolio(defaultPortfolio);
     } finally {
       setLoading(false);
     }
@@ -49,36 +58,44 @@ export default function PortfolioManager({ user }) {
 
   const fetchInvestments = async () => {
     try {
-      const { data, error } = await supabase
-        .from('investments')
-        .select('*')
-        .eq('portfolio_id', selectedPortfolio.id)
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await portfolioClient.getInvestments(selectedPortfolio.id);
+      
       if (error) throw error;
-      setInvestments(data);
+      setInvestments(data || []);
     } catch (error) {
       console.error('Error fetching investments:', error);
+      setError('Failed to load investments.');
     }
   };
 
   const addInvestment = async (e) => {
     e.preventDefault();
+    
+    // Validate inputs
+    if (!newInvestment.cryptocurrency_symbol || !newInvestment.cryptocurrency_name || 
+        !newInvestment.amount || !newInvestment.buy_price) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    if (parseFloat(newInvestment.amount) <= 0 || parseFloat(newInvestment.buy_price) <= 0) {
+      setError('Amount and buy price must be positive numbers.');
+      return;
+    }
+
     try {
-      const { data, error } = await supabase
-        .from('investments')
-        .insert([
-          {
-            portfolio_id: selectedPortfolio.id,
-            cryptocurrency_symbol: newInvestment.cryptocurrency_symbol.toUpperCase(),
-            cryptocurrency_name: newInvestment.cryptocurrency_name,
-            amount: parseFloat(newInvestment.amount),
-            buy_price: parseFloat(newInvestment.buy_price),
-            current_price: parseFloat(newInvestment.buy_price),
-            notes: newInvestment.notes
-          }
-        ])
-        .select();
+      setError('');
+      const investmentData = {
+        portfolio_id: selectedPortfolio.id,
+        cryptocurrency_symbol: newInvestment.cryptocurrency_symbol.toUpperCase(),
+        cryptocurrency_name: newInvestment.cryptocurrency_name,
+        amount: parseFloat(newInvestment.amount),
+        buy_price: parseFloat(newInvestment.buy_price),
+        current_price: parseFloat(newInvestment.buy_price),
+        notes: newInvestment.notes || ''
+      };
+
+      const { data, error } = await portfolioClient.addInvestment(investmentData);
 
       if (error) throw error;
       
@@ -93,20 +110,20 @@ export default function PortfolioManager({ user }) {
       setShowAddInvestment(false);
     } catch (error) {
       console.error('Error adding investment:', error);
+      setError('Failed to add investment. Please try again.');
     }
   };
 
   const deleteInvestment = async (id) => {
     try {
-      const { error } = await supabase
-        .from('investments')
-        .delete()
-        .eq('id', id);
+      setError('');
+      const { error } = await portfolioClient.deleteInvestment(id);
 
       if (error) throw error;
       setInvestments(investments.filter(inv => inv.id !== id));
     } catch (error) {
       console.error('Error deleting investment:', error);
+      setError('Failed to delete investment.');
     }
   };
 
@@ -132,6 +149,32 @@ export default function PortfolioManager({ user }) {
 
   return (
     <div className="portfolio-manager">
+      {!isSupabaseConfigured() && (
+        <div className="demo-notice" style={{
+          background: '#fff3cd',
+          border: '1px solid #ffeaa7',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '20px',
+          color: '#856404'
+        }}>
+          <strong>Demo Mode:</strong> Database not configured. Your data will not be saved.
+        </div>
+      )}
+      
+      {error && (
+        <div className="error-message" style={{
+          background: '#f8d7da',
+          border: '1px solid #f5c6cb',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '20px',
+          color: '#721c24'
+        }}>
+          {error}
+        </div>
+      )}
+
       <div className="portfolio-header">
         <h2>Portfolio Tracker</h2>
         <div className="portfolio-summary">
@@ -223,7 +266,9 @@ export default function PortfolioManager({ user }) {
       <div className="investments-list">
         <h3>Your Investments</h3>
         {investments.length === 0 ? (
-          <p>No investments yet. Add your first investment above!</p>
+          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+            <p>No investments yet. Add your first investment above!</p>
+          </div>
         ) : (
           investments.map((investment) => {
             const pnl = (investment.current_price - investment.buy_price) * investment.amount;
