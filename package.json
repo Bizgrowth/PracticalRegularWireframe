@@ -9,6 +9,7 @@
     "test": "echo \"No tests specified\""
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.51.0",
     "apicache": "^1.6.3",
     "dotenv": "^16.6.1",
     "eslint": "^9.31.0",

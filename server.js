@@ -1,13 +1,20 @@
 const express = require('express');
 const path = require('path');
+const OpenAI = require('openai');
+const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
-const apicache = require('apicache'); // Import apicache
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_ANON_KEY || 'placeholder-key'
+);
+
 // Initialize cache
-let apiCache = apicache.middleware;
+let apiCache = require('apicache').middleware;
 const cache = apiCache('5 minutes'); // Cache for 5 minutes
 
 // Middleware
