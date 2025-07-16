@@ -34,11 +34,11 @@ app.post('/api/analyze', cache, async (req, res) => {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
 
-    const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey || apiKey === 'your_openai_api_key_here' || apiKey.includes('***')) {
       return res.status(500).json({
         success: false,
-        error: 'OpenAI API key not properly configured. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment variables.'
+        error: 'OpenAI API key not properly configured. Please set OPENAI_API_KEY in your environment variables.'
       });
     }
 
@@ -115,11 +115,11 @@ app.get('/api/top10', cache, async (req, res) => {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
 
-    const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey || apiKey === 'your_openai_api_key_here' || apiKey.includes('***')) {
       return res.status(500).json({
         success: false,
-        error: 'OpenAI API key not properly configured. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment variables.'
+        error: 'OpenAI API key not properly configured. Please set OPENAI_API_KEY in your environment variables.'
       });
     }
 
