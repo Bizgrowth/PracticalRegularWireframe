@@ -27,12 +27,16 @@ app.post('/api/analyze', cache, async (req, res) => {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
 
-    if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    if (!apiKey || apiKey === 'your_openai_api_key_here' || apiKey.includes('***')) {
+      return res.status(500).json({
+        success: false,
+        error: 'OpenAI API key not properly configured. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment variables.'
+      });
     }
 
     const openai = new OpenAI({
-      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+      apiKey: apiKey,
     });
 
     const prompt = `As a cryptocurrency investment expert, provide TOP 10 RANKED investment recommendations based on comprehensive analysis:
@@ -104,12 +108,16 @@ app.get('/api/top10', cache, async (req, res) => {
     // Import OpenAI dynamically
     const { OpenAI } = await import('openai');
 
-    if (!process.env.EXPO_PUBLIC_OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    if (!apiKey || apiKey === 'your_openai_api_key_here' || apiKey.includes('***')) {
+      return res.status(500).json({
+        success: false,
+        error: 'OpenAI API key not properly configured. Please set EXPO_PUBLIC_OPENAI_API_KEY in your environment variables.'
+      });
     }
 
     const openai = new OpenAI({
-      apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+      apiKey: apiKey,
     });
 
     const prompt = `As a cryptocurrency investment analyst, provide detailed analysis for the TOP 10 cryptocurrency investment opportunities. For each cryptocurrency, provide comprehensive analysis formatted as JSON.
