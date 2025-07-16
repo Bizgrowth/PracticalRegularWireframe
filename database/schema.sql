@@ -1,6 +1,6 @@
 
 -- Create profiles table (extends auth.users)
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,
   full_name TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE profiles (
 );
 
 -- Create portfolios table
-CREATE TABLE portfolios (
+CREATE TABLE IF NOT EXISTS portfolios (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   name TEXT NOT NULL DEFAULT 'My Portfolio',
@@ -21,7 +21,7 @@ CREATE TABLE portfolios (
 );
 
 -- Create investments table
-CREATE TABLE investments (
+CREATE TABLE IF NOT EXISTS investments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   portfolio_id UUID REFERENCES portfolios(id) ON DELETE CASCADE,
   cryptocurrency_symbol TEXT NOT NULL,
